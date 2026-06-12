@@ -254,12 +254,12 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 
 <!-- HEADER -->
 <header>
-  <a class="logo" href="#"><span>T</span>radyly</a>
-  <div class="hdr-nav">
-    <span class="nav-link" onclick="document.querySelector('#how').scrollIntoView({behavior:'smooth'})">How it works</span>
-    <span class="nav-link" onclick="document.querySelector('#pricing').scrollIntoView({behavior:'smooth'})">Pricing</span>
+  <a class="logo" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;"><span>T</span>radyly</a>
+  <div class="hdr-nav" id="hdr-nav">
+    <span class="nav-link" id="nav-how" onclick="scrollToSection('#how')">How it works</span>
+    <span class="nav-link" id="nav-pricing" onclick="scrollToSection('#pricing')">Pricing</span>
     <button class="theme-btn" onclick="toggleTheme()" id="tbtn">☀ Light</button>
-    <button class="hdr-cta" onclick="document.querySelector('#app').scrollIntoView({behavior:'smooth'})">Start Free →</button>
+    <button class="hdr-cta" id="nav-cta" onclick="scrollToSection('#app')">Start Free →</button>
   </div>
 </header>
 
@@ -762,6 +762,22 @@ function detectCurrency(){
 function toast(msg,dur){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur||2500);}
 function toggleTheme(){const d=document.documentElement;const l=d.getAttribute('data-theme')==='light';d.setAttribute('data-theme',l?'dark':'light');document.getElementById('tbtn').textContent=l?'☀ Light':'🌙 Dark';}
 function pnl(t){const e=parseFloat(t.entry),x=parseFloat(t.exit),q=parseFloat(t.quantity)||1;return(isNaN(e)||isNaN(x))?0:t.direction==='Long'?(x-e)*q:(e-x)*q;}
+function scrollToSection(sel){const el=document.querySelector(sel);if(el)el.scrollIntoView({behavior:'smooth'});}
+function updateNav(loggedIn){
+  const how=document.getElementById('nav-how');
+  const pricing=document.getElementById('nav-pricing');
+  const cta=document.getElementById('nav-cta');
+  if(!how||!pricing||!cta)return;
+  if(loggedIn){
+    how.style.display='none';pricing.style.display='none';
+    cta.textContent='🏠 Home';
+    cta.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+  }else{
+    how.style.display='';pricing.style.display='';
+    cta.textContent='Start Free →';
+    cta.onclick=()=>scrollToSection('#app');
+  }
+}
 function fmt(n){return isNaN(n)?'—':(n>=0?'+':'')+parseFloat(n).toFixed(2);}
 
 // ── MARKET HOURS ──────────────────────────────────────
@@ -836,6 +852,7 @@ async function validateCode(){
       document.getElementById('main-app').style.display='block';
       document.getElementById('usage-info').textContent=userUsed+' / '+userLimit+' analyses used';
       loadStreak();toast('Welcome to Tradyly! 🎯');
+      updateNav(true);
       // Hide landing page sections and scroll to app
       document.querySelectorAll('.hero,.fg-section,.section,.section-alt').forEach(el=>el.style.display='none');
       document.getElementById('app').scrollIntoView({behavior:'smooth'});
@@ -847,7 +864,14 @@ async function validateCode(){
   btn.textContent='Enter Tradyly →';btn.disabled=false;
 }
 
-function logout(){userCode='';localStorage.removeItem('tradyly_code');document.getElementById('code-screen').style.display='block';document.getElementById('main-app').style.display='none';}
+function logout(){
+  userCode='';localStorage.removeItem('tradyly_code');
+  document.getElementById('code-screen').style.display='block';
+  document.getElementById('main-app').style.display='none';
+  document.querySelectorAll('.hero,.fg-section,.section,.section-alt').forEach(el=>el.style.display='');
+  updateNav(false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
 window.onload=()=>{
   detectCurrency();
