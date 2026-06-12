@@ -1050,6 +1050,7 @@ function updateNav(loggedIn){
     cta.textContent='🏠 Home';
     cta.onclick=()=>{
       document.getElementById('landing').style.display='block';
+      document.getElementById('app').style.display='none';
       window.scrollTo({top:0,behavior:'smooth'});
     };
   }else{
@@ -1139,6 +1140,7 @@ async function validateCode(){
       updateNav(true);
       // Hide landing page sections and scroll to app
       document.getElementById('landing').style.display='none';
+      document.getElementById('app').style.display='block';
       document.getElementById('app').scrollIntoView({behavior:'smooth'});
     }else{
       err.style.display='block';
@@ -1153,6 +1155,7 @@ function logout(){
   document.getElementById('code-screen').style.display='block';
   document.getElementById('main-app').style.display='none';
   document.getElementById('landing').style.display='block';
+  document.getElementById('app').style.display='none';
   updateNav(false);
   window.scrollTo({top:0,behavior:'smooth'});
 }
