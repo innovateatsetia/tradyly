@@ -493,7 +493,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
           <li>Daily Pulse + history</li>
           <li>Weekly Performance Badge</li>
         </ul>
-        <a href="YOUR_GUMROAD_FULL_LINK" target="_blank" class="btn-buy">Get Full Access — $19 ↗</a>
+        <a href="https://innovatetech.gumroad.com/l/tradyly-full" target="_blank" class="btn-buy">Get Full Access — $19 ↗</a>
       </div>
     </div>
     <div style="font-size:12px;color:var(--muted);">No subscription. No monthly fees. Pay once, use forever. 🔒 Secure payment via Gumroad.</div>
@@ -522,8 +522,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
         <div style="margin-top:20px;padding:16px;background:var(--green-dim);border-radius:var(--rs);border:1px solid var(--border2);">
           <div style="font-size:12px;color:var(--green);margin-bottom:8px;font-weight:600;">No code yet? Get one instantly:</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-            <a href="YOUR_GUMROAD_TRIAL_LINK" target="_blank" class="btn-buy-o" style="font-size:12px;padding:8px 16px;display:inline-block;">$1 Trial — 3 analyses</a>
-            <a href="YOUR_GUMROAD_FULL_LINK" target="_blank" class="btn-buy" style="font-size:12px;padding:8px 16px;display:inline-block;">$19 Full Access — 50 analyses</a>
+            <a href="https://innovatetech.gumroad.com/l/tradyly-trial" target="_blank" class="btn-buy-o" style="font-size:12px;padding:8px 16px;display:inline-block;">$1 Trial — 3 analyses</a>
+            <a href="https://innovatetech.gumroad.com/l/tradyly-full" target="_blank" class="btn-buy" style="font-size:12px;padding:8px 16px;display:inline-block;">$19 Full Access — 50 analyses</a>
           </div>
         </div>
         <div id="code-error" style="display:none;margin-top:12px;color:var(--red);font-size:13px;padding:10px;background:var(--red-dim);border-radius:var(--rs);"></div>
@@ -545,6 +545,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
         <button class="tab" onclick="sw('analyser',this)">🧠 Analyser</button>
         <button class="tab" onclick="sw('pulse',this)">💓 Daily Pulse</button>
         <button class="tab" onclick="sw('badge',this)">🏆 Badge</button>
+        <button class="tab" onclick="sw('guide',this)">📖 Guide</button>
       </div>
 
       <!-- UPLOAD PANEL -->
@@ -672,6 +673,77 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
         </div>
         <div id="badge-res" style="display:none;"></div>
       </div>
+
+      <!-- GUIDE PANEL -->
+      <div class="panel" id="panel-guide">
+        <div class="card">
+          <div class="card-t">📖 How to use Tradyly — Step by Step</div>
+          <div class="ib">Follow these steps every trading day to get maximum value from Tradyly.</div>
+
+          <div style="margin-bottom:16px;">
+            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--green);flex-shrink:0;">1</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Upload your trades → Upload tab</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Download the Tradyly template CSV. Fill it with your trades from your broker. Upload it here. Or use Manual Entry to type trades directly. Works with Zerodha, Upstox, Binance, MT4 and any broker globally.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--blue-dim);border:1px solid var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--blue);flex-shrink:0;">2</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Review your trades → Trades tab</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.7;">See all your trades with live P&L calculation. Check win rate and total P&L in your selected currency. Delete any incorrect trades before analysis.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--purple-dim);border:1px solid var(--purple);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--purple);flex-shrink:0;">3</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Generate AI Analysis → Analyser tab</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Click Generate AI Blind Spot Analysis. Wait 15-20 seconds. Get your full report — trader score, top 3 mistakes, personality type, emotion analysis, action plan. Download PDF or share on X.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--amber-dim);border:1px solid var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--amber);flex-shrink:0;">4</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Daily check-in → Daily Pulse tab</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Every evening after market close — spend 2 minutes answering 5 honest questions. Get AI coaching on your day. Build your streak. Your history is saved permanently to your access code.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--green);flex-shrink:0;">5</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Weekly review → Badge tab</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Every weekend — generate your Weekly Performance Badge. See your week summarised with grade, top win, biggest lesson, and next week focus. Share on X to stay accountable.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;padding:14px 0;align-items:flex-start;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--red-dim);border:1px solid var(--red);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--red);flex-shrink:0;">6</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Track your improvement over time</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Run a new analysis every week with fresh trades. Watch your Trader Score improve. Compare your mistakes month over month. The goal is to see the same mistakes disappear from your reports.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-t">💡 Pro Tips</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Select your currency</span> at the top of the page before adding trades. All P&L values will show in your local currency.</div>
+            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Add emotion to every trade.</span> This is what makes Tradyly powerful — AI can find patterns between your emotions and your P&L.</div>
+            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Minimum 5 trades</span> for best analysis. More trades = more accurate blind spot detection.</div>
+            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Your access code is permanent.</span> Save it somewhere safe. Use it on any device. All your Daily Pulse history is tied to this code.</div>
+            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Share your score on X</span> after each analysis. Tag <span style="color:var(--blue);">@SahilBuildsAI</span> — we repost the best ones.</div>
+          </div>
+        </div>
+
+        <div class="wb"><strong>Remember:</strong> Tradyly is a personal journal tool only. Not investment advice. Always consult a qualified financial advisor before making trading decisions.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -687,8 +759,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 <input type="file" id="csv-in" accept=".csv,.xlsx,.xls" style="display:none" onchange="csvFile(event)">
 <script>
 const API='https://tradyly.com';
-const GUMROAD_TRIAL='YOUR_GUMROAD_TRIAL_LINK';
-const GUMROAD_FULL='YOUR_GUMROAD_FULL_LINK';
+const GUMROAD_TRIAL='https://innovatetech.gumroad.com/l/tradyly-trial';
+const GUMROAD_FULL='https://innovatetech.gumroad.com/l/tradyly-full';
 
 // STATE
 let trades=[],emo='Neutral',mode='tmpl',userCode='',userPlan='',userUsed=0,userLimit=0,currentReport=null;
