@@ -286,7 +286,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 <div class="hero">
   <div class="hero-glow"></div>
   <div class="eyebrow">✦ AI-Powered Trading Coach</div>
-  <h1>Stop Losing Money<br>to the <em>Same Mistakes</em><br><span class="dim">Over and Over Again.</span></h1>
+  <h1>Stop Losing Money<br>to the <em>Same Mistakes</em><br><span class="dim">Over and Over Again</span></h1>
   <p class="hero-sub">Tradyly analyses your trades with AI and tells you exactly what is holding you back. Not generic advice. Your specific patterns. Your exact blind spots.</p>
   <p class="hero-trust">Trusted by traders across <b>India, USA, UAE & UK</b> · <b>Stocks · F&O · Crypto · Forex</b></p>
   <div class="hero-ctas">
@@ -388,7 +388,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 <div class="section section-alt">
   <div class="section-inner">
     <div class="sec-eye">Trading Psychology</div>
-    <h2 class="sec-title">The best traders know one thing:<br><em style="color:var(--green);font-style:normal">know yourself.</em></h2>
+    <h2 class="sec-title">The best traders know<br>one thing: <em style="color:var(--green);font-style:normal">know yourself.</em></h2>
     <div class="quote-grid">
       <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">The goal of a successful trader is to make the best trades. Money is secondary.</div><div class="quote-auth">— Alexander Elder</div></div>
       <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">It's not whether you're right or wrong, but how much you make when right and lose when wrong.</div><div class="quote-auth">— George Soros</div></div>
@@ -396,16 +396,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
       <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">In trading, the person who wins is the person who loses the least.</div><div class="quote-auth">— Ed Seykota</div></div>
       <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">Every trader has strengths and weaknesses. The key is knowing which is which.</div><div class="quote-auth">— Steve Cohen</div></div>
       <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">Emotional discipline separates profitable traders from everyone else.</div><div class="quote-auth">— Trading Principle</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- BROKERS -->
-<div class="section" style="padding:48px 24px;">
-  <div class="section-inner" style="text-align:center;">
-    <div class="sec-eye">Works With Every Broker</div>
-    <div class="broker-wrap">
-      <div class="broker-chip">Zerodha</div><div class="broker-chip">Upstox</div><div class="broker-chip">Angel One</div><div class="broker-chip">Groww</div><div class="broker-chip">Dhan</div><div class="broker-chip">5Paisa</div><div class="broker-chip">Binance</div><div class="broker-chip">Coinbase</div><div class="broker-chip">MT4/MT5</div><div class="broker-chip">Robinhood</div><div class="broker-chip">Interactive Brokers</div><div class="broker-chip">+ Any broker</div>
     </div>
   </div>
 </div>
@@ -519,6 +509,12 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
           <input id="code-input" placeholder="TRADYLY-XXXX-XXXX" style="text-align:center;font-size:18px;font-weight:600;letter-spacing:2px;text-transform:uppercase;" onkeypress="if(event.key==='Enter')validateCode()">
         </div>
         <button class="btn-p" onclick="validateCode()" id="code-btn">Enter Tradyly →</button>
+        <div style="margin-top:14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:14px;">
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+            <input type="checkbox" id="disclaimer-check" style="margin-top:2px;flex-shrink:0;accent-color:var(--green);">
+            <span style="font-size:11px;color:var(--muted2);line-height:1.6;">I understand that Tradyly is a personal trading journal tool only. It does not provide investment advice, recommendations, or any financial guidance. I am using this purely for self-reflection and journaling purposes. Tradyly is not SEBI registered.</span>
+          </label>
+        </div>
         <div style="margin-top:20px;padding:16px;background:var(--green-dim);border-radius:var(--rs);border:1px solid var(--border2);">
           <div style="font-size:12px;color:var(--green);margin-bottom:8px;font-weight:600;">No code yet? Get one instantly:</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
@@ -545,6 +541,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
         <button class="tab" onclick="sw('analyser',this)">🧠 Analyser</button>
         <button class="tab" onclick="sw('pulse',this)">💓 Daily Pulse</button>
         <button class="tab" onclick="sw('badge',this)">🏆 Badge</button>
+        <button class="tab" onclick="sw('sample',this)">📋 Sample Report</button>
         <button class="tab" onclick="sw('guide',this)">📖 Guide</button>
       </div>
 
@@ -674,71 +671,268 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
         <div id="badge-res" style="display:none;"></div>
       </div>
 
-      <!-- GUIDE PANEL -->
+      <!-- SAMPLE REPORT PANEL -->
+      <div class="panel" id="panel-sample">
+        <div class="card">
+          <div class="card-t">📋 Sample Blind Spot Report</div>
+          <div class="ib">This is what your real report looks like. Every report is unique to your trades and patterns.</div>
+
+          <!-- Sample Report Preview -->
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;">
+            <div style="background:linear-gradient(135deg,#050E1A 0%,#0A1E35 100%);padding:24px;border-bottom:1px solid var(--border);position:relative;">
+              <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:4px;">TRADYLY · SAMPLE ANALYSIS</div>
+              <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:4px;">Trading Blind Spot Report</div>
+              <div style="font-size:11px;color:var(--muted);">Sample Trader · 15 trades analysed · ₹ INR</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;padding:16px;">
+              <div style="background:var(--surface3);border-radius:var(--rs);padding:10px;text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--red);">-₹4,250</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;margin-top:2px;">Net P&L</div></div>
+              <div style="background:var(--surface3);border-radius:var(--rs);padding:10px;text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--blue);">40%</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;margin-top:2px;">Win Rate</div></div>
+              <div style="background:var(--surface3);border-radius:var(--rs);padding:10px;text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--amber);">0.65</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;margin-top:2px;">Profit Factor</div></div>
+              <div style="background:var(--surface3);border-radius:var(--rs);padding:10px;text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;">15</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;margin-top:2px;">Trades</div></div>
+            </div>
+
+            <!-- Score -->
+            <div style="padding:0 16px 16px;">
+              <div style="background:var(--surface3);border-radius:var(--rs);padding:16px;margin-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:16px;">
+                  <div style="text-align:center;">
+                    <div style="font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:var(--amber);line-height:1;">54</div>
+                    <div style="font-size:9px;color:var(--muted);">/100</div>
+                    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--amber);">C+</div>
+                  </div>
+                  <div style="flex:1;">
+                    <div style="font-size:12px;color:var(--muted2);line-height:1.6;margin-bottom:8px;">This trader shows potential but is consistently undermined by emotional decision-making and poor risk management. Revenge trading after losses is the primary issue.</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                      <div style="background:var(--surface2);border-radius:6px;padding:6px;text-align:center;"><div style="font-size:13px;font-weight:600;color:var(--blue);">5/10</div><div style="font-size:9px;color:var(--muted);">Psychology</div></div>
+                      <div style="background:var(--surface2);border-radius:6px;padding:6px;text-align:center;"><div style="font-size:13px;font-weight:600;color:var(--amber);">4/10</div><div style="font-size:9px;color:var(--muted);">Risk Mgmt</div></div>
+                      <div style="background:var(--surface2);border-radius:6px;padding:6px;text-align:center;"><div style="font-size:13px;font-weight:600;color:var(--purple);">6/10</div><div style="font-size:9px;color:var(--muted);">Consistency</div></div>
+                      <div style="background:var(--surface2);border-radius:6px;padding:6px;text-align:center;"><div style="font-size:13px;font-weight:600;color:var(--green);">5/10</div><div style="font-size:9px;color:var(--muted);">Discipline</div></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top:10px;background:var(--surface2);border-radius:var(--rs);padding:10px;display:flex;align-items:center;gap:10px;">
+                  <span style="font-size:22px;">🐺</span>
+                  <div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Trader Personality</div><div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--green);">The Wolf</div></div>
+                </div>
+              </div>
+
+              <!-- Top 3 Mistakes -->
+              <div style="background:var(--surface3);border-radius:var(--rs);padding:14px;border:1px solid rgba(255,69,96,.2);margin-bottom:10px;">
+                <div style="font-size:10px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🎯 Top 3 Repeating Mistakes</div>
+                <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--red);opacity:.4;">1</span><span style="font-size:12px;color:var(--muted2);">Revenge trading after 3 consecutive losses — you placed 4 unplanned trades on 15-Jan leading to ₹3,200 loss</span></div>
+                <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--red);opacity:.4;">2</span><span style="font-size:12px;color:var(--muted2);">Holding losers 3x longer than winners — avg loss held 47 mins vs avg win held 14 mins</span></div>
+                <div style="display:flex;gap:10px;padding:8px 0;"><span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--red);opacity:.4;">3</span><span style="font-size:12px;color:var(--muted2);">FOMO entries — 6 of 15 trades entered after initial move already happened, all resulted in losses</span></div>
+              </div>
+
+              <!-- Action -->
+              <div style="background:rgba(0,200,150,.06);border:1px solid var(--border2);border-radius:var(--rs);padding:12px;">
+                <div style="font-size:9px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">⚡ Do This Today</div>
+                <div style="font-size:12px;color:var(--green);line-height:1.6;">Set a hard rule: after 2 consecutive losses, stop trading for the day. No exceptions. Write this on a sticky note and place it on your monitor.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA buttons -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;">
+            <a href="https://innovatetech.gumroad.com/l/tradyly-trial" target="_blank" class="btn-buy-o" style="text-align:center;padding:13px;display:block;">Try for $1 — Get Yours ↗</a>
+            <a href="https://innovatetech.gumroad.com/l/tradyly-full" target="_blank" class="btn-buy" style="text-align:center;padding:13px;display:block;">Full Access $19 ↗</a>
+          </div>
+          <div class="wb" style="margin-top:10px;">This is a sample report for illustration only. Your actual report will be based on your real trades and will be completely unique to your trading patterns.</div>
+        </div>
+      </div>
       <div class="panel" id="panel-guide">
         <div class="card">
-          <div class="card-t">📖 How to use Tradyly — Step by Step</div>
-          <div class="ib">Follow these steps every trading day to get maximum value from Tradyly.</div>
+          <div class="card-t">📖 How to use Tradyly — Visual Guide</div>
+          <div class="ib">Follow these steps every trading day. Tap any step to expand details.</div>
 
-          <div style="margin-bottom:16px;">
-            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
-              <div style="width:32px;height:32px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--green);flex-shrink:0;">1</div>
-              <div>
-                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Upload your trades → Upload tab</div>
-                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Download the Tradyly template CSV. Fill it with your trades from your broker. Upload it here. Or use Manual Entry to type trades directly. Works with Zerodha, Upstox, Binance, MT4 and any broker globally.</div>
+          <!-- Step 1 -->
+          <div style="margin-bottom:12px;">
+            <div onclick="toggleGuide(1)" style="cursor:pointer;background:var(--surface2);border:1px solid var(--green);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:#080F1A;flex-shrink:0;font-size:16px;">1</div>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;">Select Currency & Upload Trades</div><div style="font-size:11px;color:var(--muted);">📥 Upload tab → Start here</div></div>
+              <div id="guide-arrow-1" style="color:var(--green);font-size:18px;transition:transform .3s;">▼</div>
+            </div>
+            <div id="guide-detail-1" style="background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:16px;display:block;">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--green);color:#080F1A;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">→</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">At the very top of the page — select your trading currency (₹ INR, $ USD, etc). This sets the currency for all P&L calculations.</div>
+                </div>
+                <div style="background:var(--bg);border-radius:var(--rs);padding:12px;font-family:monospace;font-size:11px;color:var(--green);">
+                  💱 Your trading currency: <span style="background:var(--green);color:#080F1A;padding:2px 8px;border-radius:4px;">₹ INR</span> $ USD  AED  £ GBP...
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--blue);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">→</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">Choose <strong style="color:var(--text)">Tradyly Template</strong> — download the CSV file, fill your trades from your broker, then upload. Or choose <strong style="color:var(--text)">Manual Entry</strong> to type trades directly.</div>
+                </div>
+                <div style="background:var(--bg);border-radius:var(--rs);padding:12px;">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div style="border:1.5px solid var(--green);border-radius:var(--rs);padding:10px;text-align:center;background:var(--green-dim);">
+                      <div style="font-size:18px;margin-bottom:4px;">📊</div>
+                      <div style="font-size:11px;font-weight:600;">Tradyly Template</div>
+                      <div style="font-size:10px;color:var(--muted);">Best for many trades</div>
+                    </div>
+                    <div style="border:1.5px solid var(--border);border-radius:var(--rs);padding:10px;text-align:center;">
+                      <div style="font-size:18px;margin-bottom:4px;">✏️</div>
+                      <div style="font-size:11px;font-weight:600;">Manual Entry</div>
+                      <div style="font-size:10px;color:var(--muted);">Best for 1-10 trades</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--amber);color:#080F1A;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">!</div>
+                  <div style="font-size:12px;color:var(--amber);line-height:1.6;"><strong>Pro Tip:</strong> Always add the Emotion for each trade. This is what makes the AI analysis powerful — it finds patterns between your emotions and your P&L.</div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
-              <div style="width:32px;height:32px;border-radius:50%;background:var(--blue-dim);border:1px solid var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--blue);flex-shrink:0;">2</div>
-              <div>
-                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Review your trades → Trades tab</div>
-                <div style="font-size:12px;color:var(--muted);line-height:1.7;">See all your trades with live P&L calculation. Check win rate and total P&L in your selected currency. Delete any incorrect trades before analysis.</div>
+          <!-- Step 2 -->
+          <div style="margin-bottom:12px;">
+            <div onclick="toggleGuide(2)" style="cursor:pointer;background:var(--surface2);border:1px solid var(--blue);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:white;flex-shrink:0;font-size:16px;">2</div>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;">Review Your Trades</div><div style="font-size:11px;color:var(--muted);">📊 Trades tab → Check before analysing</div></div>
+              <div id="guide-arrow-2" style="color:var(--blue);font-size:18px;transition:transform .3s;">▶</div>
+            </div>
+            <div id="guide-detail-2" style="background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:16px;display:none;">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--blue);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">→</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">Click the <strong style="color:var(--text)">Trades tab</strong> to see all your trades with live P&L in your selected currency.</div>
+                </div>
+                <div style="background:var(--bg);border-radius:var(--rs);padding:12px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:var(--surface2);border-radius:var(--rs);margin-bottom:6px;">
+                    <div><div style="font-size:12px;font-weight:600;">RELIANCE <span style="background:var(--blue-dim);color:var(--blue);padding:1px 6px;border-radius:10px;font-size:9px;">Stock</span> <span style="color:var(--green);font-size:10px;">Long</span></div><div style="font-size:10px;color:var(--muted);">15-Jan · Breakout · Confident</div></div>
+                    <div style="color:var(--green);font-weight:600;font-size:13px;">+₹595</div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:var(--surface2);border-radius:var(--rs);">
+                    <div><div style="font-size:12px;font-weight:600;">NIFTY <span style="background:var(--blue-dim);color:var(--blue);padding:1px 6px;border-radius:10px;font-size:9px;">F&O</span> <span style="color:var(--red);font-size:10px;">Short</span></div><div style="font-size:10px;color:var(--muted);">16-Jan · Reversal · Fearful</div></div>
+                    <div style="color:var(--red);font-weight:600;font-size:13px;">-₹7,500</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--red);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">✕</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">Delete any wrong trades using the ✕ button before running analysis. Clean data = better results.</div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
-              <div style="width:32px;height:32px;border-radius:50%;background:var(--purple-dim);border:1px solid var(--purple);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--purple);flex-shrink:0;">3</div>
-              <div>
-                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Generate AI Analysis → Analyser tab</div>
-                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Click Generate AI Blind Spot Analysis. Wait 15-20 seconds. Get your full report — trader score, top 3 mistakes, personality type, emotion analysis, action plan. Download PDF or share on X.</div>
+          <!-- Step 3 -->
+          <div style="margin-bottom:12px;">
+            <div onclick="toggleGuide(3)" style="cursor:pointer;background:var(--surface2);border:1px solid var(--purple);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:white;flex-shrink:0;font-size:16px;">3</div>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;">Generate AI Analysis</div><div style="font-size:11px;color:var(--muted);">🧠 Analyser tab → Core feature</div></div>
+              <div id="guide-arrow-3" style="color:var(--purple);font-size:18px;transition:transform .3s;">▶</div>
+            </div>
+            <div id="guide-detail-3" style="background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:16px;display:none;">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--purple);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">→</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">Click <strong style="color:var(--text)">Analyser tab</strong> then click <strong style="color:var(--green)">⚡ Generate AI Blind Spot Analysis</strong></div>
+                </div>
+                <div style="background:var(--bg);border-radius:var(--rs);padding:12px;text-align:center;">
+                  <div style="background:var(--green);color:#080F1A;border-radius:var(--rs);padding:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:8px;">⚡ Generate AI Blind Spot Analysis</div>
+                  <div style="font-size:11px;color:var(--muted);">↓ Wait 15-20 seconds ↓</div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--purple);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">→</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">Your full report appears with: Trader Score, Grade, Personality Type, Top 3 Mistakes, P&L Analysis, Emotion Analysis, Action Plan</div>
+                </div>
+                <div style="background:var(--bg);border-radius:var(--rs);padding:12px;display:flex;gap:8px;">
+                  <div style="background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3);border-radius:var(--rs);padding:8px;flex:1;text-align:center;font-size:12px;font-weight:600;">📄 Download PDF</div>
+                  <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:8px;flex:1;text-align:center;font-size:12px;font-weight:600;">𝕏 Share Score</div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--amber);color:#080F1A;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">!</div>
+                  <div style="font-size:12px;color:var(--amber);line-height:1.6;"><strong>Minimum 5 trades recommended</strong> for best results. More trades = more accurate blind spot detection.</div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
-              <div style="width:32px;height:32px;border-radius:50%;background:var(--amber-dim);border:1px solid var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--amber);flex-shrink:0;">4</div>
-              <div>
-                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Daily check-in → Daily Pulse tab</div>
-                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Every evening after market close — spend 2 minutes answering 5 honest questions. Get AI coaching on your day. Build your streak. Your history is saved permanently to your access code.</div>
+          <!-- Step 4 -->
+          <div style="margin-bottom:12px;">
+            <div onclick="toggleGuide(4)" style="cursor:pointer;background:var(--surface2);border:1px solid var(--amber);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:#080F1A;flex-shrink:0;font-size:16px;">4</div>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;">Daily Pulse — Every Evening</div><div style="font-size:11px;color:var(--muted);">💓 Daily Pulse tab → 2 minutes daily</div></div>
+              <div id="guide-arrow-4" style="color:var(--amber);font-size:18px;transition:transform .3s;">▶</div>
+            </div>
+            <div id="guide-detail-4" style="background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:16px;display:none;">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--amber);color:#080F1A;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">→</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">After market close every day — click <strong style="color:var(--text)">Daily Pulse tab</strong> and answer 5 honest questions. Takes 2 minutes.</div>
+                </div>
+                <div style="background:var(--bg);border-radius:var(--rs);padding:12px;">
+                  <div style="font-size:11px;color:var(--muted2);margin-bottom:6px;font-weight:600;">5 Questions you answer:</div>
+                  <div style="display:flex;flex-direction:column;gap:4px;">
+                    <div style="font-size:11px;color:var(--muted2);">1️⃣ How many trades did you take today?</div>
+                    <div style="font-size:11px;color:var(--muted2);">2️⃣ Did you follow your trading plan?</div>
+                    <div style="font-size:11px;color:var(--muted2);">3️⃣ What emotion dominated today?</div>
+                    <div style="font-size:11px;color:var(--muted2);">4️⃣ Biggest mistake today?</div>
+                    <div style="font-size:11px;color:var(--muted2);">5️⃣ Rate your discipline (1-10)</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--green);color:#080F1A;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">✓</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">AI gives you coaching feedback instantly. Your streak grows. History saved permanently to your code.</div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
-              <div style="width:32px;height:32px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--green);flex-shrink:0;">5</div>
-              <div>
-                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Weekly review → Badge tab</div>
-                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Every weekend — generate your Weekly Performance Badge. See your week summarised with grade, top win, biggest lesson, and next week focus. Share on X to stay accountable.</div>
+          <!-- Step 5 -->
+          <div style="margin-bottom:12px;">
+            <div onclick="toggleGuide(5)" style="cursor:pointer;background:var(--surface2);border:1px solid var(--green);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:#080F1A;flex-shrink:0;font-size:16px;">5</div>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;">Weekly Performance Badge</div><div style="font-size:11px;color:var(--muted);">🏆 Badge tab → Every weekend</div></div>
+              <div id="guide-arrow-5" style="color:var(--green);font-size:18px;transition:transform .3s;">▶</div>
+            </div>
+            <div id="guide-detail-5" style="background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:16px;display:none;">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--green);color:#080F1A;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">→</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">Every weekend — click <strong style="color:var(--text)">Badge tab</strong> → click <strong style="color:var(--green)">Generate Performance Badge</strong></div>
+                </div>
+                <div style="background:var(--bg);border-radius:var(--rs);padding:12px;text-align:center;">
+                  <div style="font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--blue);">B+</div>
+                  <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Your weekly grade</div>
+                  <div style="background:var(--green-dim);color:var(--green);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;display:inline-block;">🏆 Consistent Trader</div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="background:var(--blue);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">→</div>
+                  <div style="font-size:12px;color:var(--muted2);line-height:1.6;">Share your badge on X. Tag <strong style="color:var(--blue)">@SahilBuildsAI</strong> — best badges get reposted. Stay accountable publicly.</div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div style="display:flex;gap:12px;padding:14px 0;align-items:flex-start;">
-              <div style="width:32px;height:32px;border-radius:50%;background:var(--red-dim);border:1px solid var(--red);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--red);flex-shrink:0;">6</div>
-              <div>
-                <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Track your improvement over time</div>
-                <div style="font-size:12px;color:var(--muted);line-height:1.7;">Run a new analysis every week with fresh trades. Watch your Trader Score improve. Compare your mistakes month over month. The goal is to see the same mistakes disappear from your reports.</div>
-              </div>
+          <!-- Flow diagram -->
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-top:4px;">
+            <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Your Daily Routine</div>
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;justify-content:center;">
+              <div style="background:var(--green-dim);border:1px solid var(--green);border-radius:var(--rs);padding:6px 12px;font-size:11px;font-weight:600;color:var(--green);text-align:center;">📥 Upload<br>Trades</div>
+              <div style="color:var(--green);font-size:18px;">→</div>
+              <div style="background:var(--blue-dim);border:1px solid var(--blue);border-radius:var(--rs);padding:6px 12px;font-size:11px;font-weight:600;color:var(--blue);text-align:center;">🧠 Run<br>Analysis</div>
+              <div style="color:var(--green);font-size:18px;">→</div>
+              <div style="background:var(--purple-dim);border:1px solid var(--purple);border-radius:var(--rs);padding:6px 12px;font-size:11px;font-weight:600;color:var(--purple);text-align:center;">📄 Download<br>PDF</div>
+              <div style="color:var(--green);font-size:18px;">→</div>
+              <div style="background:var(--amber-dim);border:1px solid var(--amber);border-radius:var(--rs);padding:6px 12px;font-size:11px;font-weight:600;color:var(--amber);text-align:center;">💓 Daily<br>Pulse</div>
+              <div style="color:var(--green);font-size:18px;">→</div>
+              <div style="background:var(--green-dim);border:1px solid var(--green);border-radius:var(--rs);padding:6px 12px;font-size:11px;font-weight:600;color:var(--green);text-align:center;">🏆 Weekly<br>Badge</div>
             </div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-t">💡 Pro Tips</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Select your currency</span> at the top of the page before adding trades. All P&L values will show in your local currency.</div>
-            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Add emotion to every trade.</span> This is what makes Tradyly powerful — AI can find patterns between your emotions and your P&L.</div>
-            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Minimum 5 trades</span> for best analysis. More trades = more accurate blind spot detection.</div>
-            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Your access code is permanent.</span> Save it somewhere safe. Use it on any device. All your Daily Pulse history is tied to this code.</div>
-            <div style="background:var(--surface2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Share your score on X</span> after each analysis. Tag <span style="color:var(--blue);">@SahilBuildsAI</span> — we repost the best ones.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="background:var(--surface2);border-left:3px solid var(--green);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Always select currency first</span> before adding trades. All P&L values will show in your currency throughout.</div>
+            <div style="background:var(--surface2);border-left:3px solid var(--blue);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--muted2);line-height:1.6;"><span style="color:var(--blue);font-weight:600;">Add emotion to every trade.</span> This is what makes AI analysis powerful — it finds patterns between emotions and P&L.</div>
+            <div style="background:var(--surface2);border-left:3px solid var(--amber);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--muted2);line-height:1.6;"><span style="color:var(--amber);font-weight:600;">Minimum 5 trades</span> for best analysis. More trades = more accurate blind spot detection.</div>
+            <div style="background:var(--surface2);border-left:3px solid var(--purple);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--muted2);line-height:1.6;"><span style="color:var(--purple);font-weight:600;">Save your access code safely.</span> Use it on any device. All Daily Pulse history is tied permanently to your code.</div>
+            <div style="background:var(--surface2);border-left:3px solid var(--green);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--muted2);line-height:1.6;"><span style="color:var(--green);font-weight:600;">Share your score on X</span> after each analysis and tag <span style="color:var(--blue);">@SahilBuildsAI</span> — best scores get reposted.</div>
           </div>
         </div>
 
@@ -835,6 +1029,14 @@ function toast(msg,dur){const t=document.getElementById('toast');t.textContent=m
 function toggleTheme(){const d=document.documentElement;const l=d.getAttribute('data-theme')==='light';d.setAttribute('data-theme',l?'dark':'light');document.getElementById('tbtn').textContent=l?'☀ Light':'🌙 Dark';}
 function pnl(t){const e=parseFloat(t.entry),x=parseFloat(t.exit),q=parseFloat(t.quantity)||1;return(isNaN(e)||isNaN(x))?0:t.direction==='Long'?(x-e)*q:(e-x)*q;}
 function scrollToSection(sel){const el=document.querySelector(sel);if(el)el.scrollIntoView({behavior:'smooth'});}
+function toggleGuide(n){
+  const detail=document.getElementById('guide-detail-'+n);
+  const arrow=document.getElementById('guide-arrow-'+n);
+  if(!detail)return;
+  const open=detail.style.display!=='none';
+  detail.style.display=open?'none':'block';
+  arrow.textContent=open?'▶':'▼';
+}
 function updateNav(loggedIn){
   const how=document.getElementById('nav-how');
   const pricing=document.getElementById('nav-pricing');
@@ -911,6 +1113,10 @@ setTimeout(()=>{initSlider();setInterval(()=>slide(1),4000);},2000);
 async function validateCode(){
   const code=document.getElementById('code-input').value.trim().toUpperCase();
   const err=document.getElementById('code-error');
+  const disclaimer=document.getElementById('disclaimer-check');
+  if(disclaimer&&!disclaimer.checked){
+    err.style.display='block';err.textContent='Please read and accept the disclaimer before continuing.';return;
+  }
   if(!code||code.length<10){err.style.display='block';err.textContent='Please enter your access code';return;}
   err.style.display='none';
   const btn=document.getElementById('code-btn');btn.textContent='Checking...';btn.disabled=true;
