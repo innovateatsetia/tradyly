@@ -1050,7 +1050,10 @@ function updateNav(loggedIn){
     cta.textContent='🏠 Home';
     cta.onclick=()=>{
       document.getElementById('landing').style.display='block';
-      document.getElementById('app').style.display='none';
+      document.getElementById('app').style.display='block';
+      document.getElementById('main-app').style.display='none';
+      document.getElementById('code-screen').style.display='block';
+      updateNav(false);
       window.scrollTo({top:0,behavior:'smooth'});
     };
   }else{
