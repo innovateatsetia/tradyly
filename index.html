@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tradyly — Your Trading Blind Spots. Exposed.</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#080F1A;--surface:#0D1B2A;--surface2:#112236;--surface3:#1A2F45;--border:rgba(0,200,150,0.1);--border2:rgba(0,200,150,0.2);--text:#E8F4F0;--muted:#6B8A9A;--muted2:#8AAABB;--green:#00C896;--green-dim:rgba(0,200,150,0.1);--green-glow:rgba(0,200,150,0.2);--red:#FF4560;--red-dim:rgba(255,69,96,0.1);--blue:#1A73E8;--blue-dim:rgba(26,115,232,0.1);--amber:#F0A500;--amber-dim:rgba(240,165,0,0.1);--purple:#7C5CBF;--purple-dim:rgba(124,92,191,0.1);--r:12px;--rs:8px;}
@@ -996,14 +997,16 @@ function showReport(r,tp,wr,aw,al,pf,remaining){
 // ── STAR RATING ───────────────────────────────────────
 let userRating=0;
 function rateStar(n){userRating=n;document.querySelectorAll('.star-ic').forEach((s,i)=>s.classList.toggle('lit',i<n));toast('Rating: '+n+' star'+(n>1?'s':''));}
-function submitFb(){
+async function submitFb(){
   if(!userRating){alert('Please select a star rating');return;}
-  const fb={rating:userRating,comment:document.getElementById('fb-txt').value,code:userCode,date:new Date().toISOString()};
-  const existing=JSON.parse(localStorage.getItem('tradyly_feedback')||'[]');
-  existing.push(fb);localStorage.setItem('tradyly_feedback',JSON.stringify(existing));
-  document.getElementById('fb-txt').value='';userRating=0;
+  const comment=document.getElementById('fb-txt').value;
+  try{
+    await fetch(API+'/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:userCode,rating:userRating,comment})});
+  }catch(e){console.log('Feedback save error',e);}
+  document.getElementById('fb-txt').value='';
+  const r=userRating;userRating=0;
   document.querySelectorAll('.star-ic').forEach(s=>s.classList.remove('lit'));
-  toast('✓ Thank you! Your '+userRating+' star feedback is saved.');
+  toast('✓ Thank you for your '+r+' star feedback!');
 }
 
 // ── SHARE ON X ────────────────────────────────────────
@@ -1016,36 +1019,129 @@ function shareX(){
 // ── PDF DOWNLOAD ──────────────────────────────────────
 function dlPDF(){
   if(!currentReport){alert('Please generate a report first');return;}
-  toast('Generating PDF...',5000);
+  if(typeof window.jspdf==='undefined'){
+    toast('Loading PDF library...',3000);
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload=()=>dlPDF();document.head.appendChild(s);return;
+  }
+  toast('Generating PDF...',4000);
   const {r,tp,wr,aw,al,pf}=currentReport;
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
   const now=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
-  const sc={green:[0,200,150],blue:[26,115,232],amber:[240,165,0],red:[255,69,96]}[r.scoreColor]||[26,115,232];
   const cs=currSymbol;const cc=currCode;
-  const pdfHTML=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;background:#080F1A;color:#E8F4F0;margin:0;padding:0;}@media print{body{background:#080F1A!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}.page{page-break-after:always;}}.page{width:210mm;min-height:297mm;padding:20mm;box-sizing:border-box;background:#080F1A;}.green{color:#00C896;}.red{color:#FF4560;}.muted{color:#6B8A9A;}.muted2{color:#8AAABB;}.brand{font-size:9pt;letter-spacing:3px;text-transform:uppercase;color:#00C896;margin-bottom:8px;}.score-big{font-size:60pt;font-weight:900;line-height:1;}.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}.kpi{background:#0D1B2A;border:1px solid rgba(0,200,150,.1);border-radius:8px;padding:12px;}.kpi-l{font-size:8pt;color:#6B8A9A;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}.kpi-v{font-size:18pt;font-weight:700;}.sec-head{background:#0D1B2A;border-left:3px solid #00C896;padding:8px 12px;margin-bottom:10px;font-size:9pt;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8AAABB;}.mistake{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);}.mist-n{font-size:24pt;font-weight:900;color:#FF4560;opacity:.4;line-height:1;flex-shrink:0;}.mist-t{font-size:10pt;color:#8AAABB;line-height:1.6;padding-top:4px;}.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}.score-box{background:#0D1B2A;border-radius:6px;padding:10px;text-align:center;}.score-box-v{font-size:16pt;font-weight:700;}.score-box-l{font-size:8pt;color:#6B8A9A;text-transform:uppercase;letter-spacing:1px;}.footer{text-align:center;margin-top:20px;padding-top:12px;border-top:1px solid rgba(0,200,150,.2);font-size:8pt;color:#6B8A9A;}</style></head><body>
-  <div class="page"><div class="brand">TRADYLY · AI TRADING ANALYSIS · ${cc}</div><h1 style="font-size:36pt;font-weight:900;margin:0;color:#00C896;">Blind Spot<br>Report</h1><p class="muted2" style="margin-top:8px;font-size:10pt;">${now} · ${trades.length} trade${trades.length>1?'s':''} · ${cs} ${cc}</p>
-  <div style="display:flex;align-items:center;gap:24px;margin:24px 0;background:#0D1B2A;border-radius:10px;padding:20px;"><div style="text-align:center;"><div class="score-big" style="color:rgb(${sc.join(',')});">${r.traderScore||75}</div><div class="muted" style="font-size:9pt;">/100</div><div style="font-size:20pt;font-weight:700;color:rgb(${sc.join(',')});">${r.scoreGrade||'B+'}</div></div><div style="flex:1"><p class="muted2" style="font-size:10pt;line-height:1.6;margin-bottom:10px;">${r.verdict||''}</p><div class="score-grid"><div class="score-box"><div class="score-box-v" style="color:#1A73E8">${r.psychologyScore||7}/10</div><div class="score-box-l">Psychology</div></div><div class="score-box"><div class="score-box-v" style="color:#F0A500">${r.riskScore||6}/10</div><div class="score-box-l">Risk</div></div><div class="score-box"><div class="score-box-v" style="color:#7C5CBF">${r.consistencyScore||7}/10</div><div class="score-box-l">Consistency</div></div><div class="score-box"><div class="score-box-v" style="color:#00C896">${r.disciplineScore||8}/10</div><div class="score-box-l">Discipline</div></div></div></div></div>
-  <div class="kpi-grid"><div class="kpi"><div class="kpi-l">Net P&L (${cc})</div><div class="kpi-v" style="color:${tp>=0?'#00C896':'#FF4560'};">${fmtCurr(tp)}</div></div><div class="kpi"><div class="kpi-l">Win Rate</div><div class="kpi-v" style="color:#1A73E8;">${wr}%</div></div><div class="kpi"><div class="kpi-l">Profit Factor</div><div class="kpi-v" style="color:#F0A500;">${pf}</div></div><div class="kpi"><div class="kpi-l">Avg Win (${cc})</div><div class="kpi-v" style="color:#00C896;">${fmtCurr(parseFloat(aw))}</div></div><div class="kpi"><div class="kpi-l">Avg Loss (${cc})</div><div class="kpi-v" style="color:#FF4560;">${fmtCurr(-parseFloat(al))}</div></div><div class="kpi"><div class="kpi-l">Trades</div><div class="kpi-v;">${trades.length}</div></div></div>
-  <div><div class="sec-head" style="border-left-color:#FF4560;">Top 3 Repeating Mistakes</div>${r.top3mistakes.map((m,i)=>`<div class="mistake"><div class="mist-n">${i+1}</div><div class="mist-t">${m}</div></div>`).join('')}</div>
-  <div class="footer">TRADYLY · Your trading blind spots. Exposed. · tradyly.com</div></div>
-  <div class="page"><div class="brand">TRADYLY · DEEP ANALYSIS · ${cc}</div>
-  <div><div class="sec-head">P&L Analysis</div><p class="muted2" style="font-size:10pt;line-height:1.6;">${r.pnlAnalysis}</p></div>
-  <div><div class="sec-head" style="border-left-color:#7C5CBF;">Emotion & Psychology</div><p class="muted2" style="font-size:10pt;line-height:1.6;">${r.emotionAnalysis}</p></div>
-  <div><div class="sec-head" style="border-left-color:#1A73E8;">Strategy Performance</div><p class="muted2" style="font-size:10pt;line-height:1.6;">${r.strategyAnalysis}</p></div>
-  <div><div class="sec-head" style="border-left-color:#F0A500;">Risk Management</div><p class="muted2" style="font-size:10pt;line-height:1.6;">${r.riskAnalysis}</p></div>
-  <div><div class="sec-head">Action Plan</div><div style="background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);border-radius:6px;padding:12px;margin-bottom:10px;"><p style="font-size:9pt;font-weight:700;color:#00C896;margin-bottom:4px;">DO THIS TODAY</p><p class="green" style="font-size:10pt;line-height:1.6;">${r.immediateAction}</p></div>${r.weeklyHabits.map((h,i)=>`<p class="muted2" style="font-size:10pt;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);">${i+1}. ${h}</p>`).join('')}</div>
-  <div style="margin-top:16px;padding:12px;background:rgba(240,165,0,.06);border:1px solid rgba(240,165,0,.2);border-radius:8px;"><p style="font-size:8pt;color:#F0A500;line-height:1.7;">Disclaimer: Not investment advice. Not SEBI registered. For personal reflection only.</p></div>
-  <div class="footer">TRADYLY · Your trading blind spots. Exposed. · tradyly.com</div></div>
-  </body></html>`;
-  const w=window.open('','_blank');
-  w.document.write(pdfHTML);
-  w.document.close();
-  w.onload=()=>{
-    setTimeout(()=>{
-      w.focus();
-      w.print();
-      toast('✓ In the print dialog — select "Save as PDF" to download.',4000);
-    },800);
-  };
+  const W=210;const mg=18;const col=W-mg*2;
+
+  const dk=[8,15,26],gr=[0,200,150],rd=[255,69,96],bl=[26,115,232],am=[240,165,0],mu=[107,138,154],wh=[232,244,240],sf=[13,27,42];
+
+  // Helper
+  const bg=(c)=>doc.setFillColor(...c);
+  const tc=(c)=>doc.setTextColor(...c);
+  const font=(s,w)=>{doc.setFontSize(s);doc.setFont('helvetica',w||'normal');}
+
+  // Page 1 background
+  bg(dk);doc.rect(0,0,210,297,'F');
+  bg(sf);doc.rect(0,0,210,36,'F');
+  doc.setDrawColor(...gr);doc.setLineWidth(0.4);doc.line(0,36,210,36);
+
+  // Header
+  tc(gr);font(8,'bold');doc.text('TRADYLY · AI ANALYSIS · '+cc,mg,10);
+  tc(wh);font(20,'bold');doc.text('Blind Spot Report',mg,24);
+  tc(mu);font(8);doc.text(now+' · '+trades.length+' trades · '+cs+cc,mg,32);
+
+  // Score box
+  let y=42;
+  const sc={green:gr,blue:bl,amber:am,red:rd}[r.scoreColor]||bl;
+  bg(sf);doc.roundedRect(mg,y,col,32,2,2,'F');
+  tc(sc);font(28,'bold');doc.text(String(r.traderScore||75),mg+6,y+18);
+  font(12,'bold');doc.text(r.scoreGrade||'B+',mg+6,y+28);
+  tc(wh);font(9);
+  const vl=doc.splitTextToSize(r.verdict||'',col-38);
+  doc.text(vl.slice(0,2),mg+35,y+10);
+
+  // 4 sub scores
+  y+=36;
+  const subs=[['Psychology',r.psychologyScore,bl],['Risk Mgmt',r.riskScore,am],['Consistency',r.consistencyScore,[124,92,191]],['Discipline',r.disciplineScore,gr]];
+  const sw=(col-6)/4;
+  subs.forEach(([l,v,c],i)=>{
+    const x=mg+i*(sw+2);
+    bg(sf);doc.roundedRect(x,y,sw,14,2,2,'F');
+    tc(c);font(11,'bold');doc.text(v+'/10',x+sw/2,y+8,{align:'center'});
+    tc(mu);font(7);doc.text(l,x+sw/2,y+13,{align:'center'});
+  });
+
+  // KPIs
+  y+=18;
+  const kpis=[[`P&L`,fmtCurr(tp),tp>=0?gr:rd],['Win%',wr+'%',bl],['P.Factor',String(pf),am],['Avg Win',fmtCurr(parseFloat(aw)),gr],['Avg Loss',fmtCurr(-parseFloat(al)),rd],['Trades',String(trades.length),wh]];
+  const kw=(col-10)/3;
+  kpis.forEach(([l,v,c],i)=>{
+    const row=Math.floor(i/3),ci=i%3;
+    const x=mg+ci*(kw+5),ky=y+row*16;
+    bg(sf);doc.roundedRect(x,ky,kw,13,2,2,'F');
+    tc(c);font(10,'bold');doc.text(String(v),x+kw/2,ky+7,{align:'center'});
+    tc(mu);font(7);doc.text(l,x+kw/2,ky+12,{align:'center'});
+  });
+
+  // Mistakes
+  y+=36;
+  bg(sf);doc.rect(mg,y,col,5,'F');
+  doc.setDrawColor(...rd);doc.setLineWidth(1);doc.line(mg,y,mg,y+5);
+  tc(rd);font(7,'bold');doc.text('TOP 3 REPEATING MISTAKES',mg+4,y+3.5);
+  y+=7;
+  (r.top3mistakes||[]).forEach((m,i)=>{
+    bg(sf);doc.rect(mg,y,col,11,'F');
+    tc(rd);font(12,'bold');doc.text(String(i+1),mg+3,y+8);
+    tc(wh);font(8);
+    const ml=doc.splitTextToSize(m,col-12);
+    doc.text(ml[0],mg+12,y+5);
+    if(ml[1])doc.text(ml[1],mg+12,y+9);
+    y+=13;
+  });
+
+  // Page 2
+  doc.addPage();
+  bg(dk);doc.rect(0,0,210,297,'F');
+  y=18;
+
+  [[r.pnlAnalysis,'P&L ANALYSIS',gr],[r.emotionAnalysis,'EMOTION & PSYCHOLOGY',[124,92,191]],[r.strategyAnalysis,'STRATEGY PERFORMANCE',bl],[r.riskAnalysis,'RISK MANAGEMENT',am]].forEach(([txt,title,c])=>{
+    bg(sf);doc.rect(mg,y,col,5,'F');
+    doc.setDrawColor(...c);doc.setLineWidth(1);doc.line(mg,y,mg,y+5);
+    tc(c);font(7,'bold');doc.text(title,mg+4,y+3.5);
+    y+=7;tc(wh);font(8.5);
+    const tl=doc.splitTextToSize(txt||'',col);
+    doc.text(tl,mg,y);y+=tl.length*3.8+5;
+  });
+
+  // Action
+  bg([0,30,18]);doc.roundedRect(mg,y,col,18,2,2,'F');
+  doc.setDrawColor(...gr);doc.setLineWidth(0.3);doc.roundedRect(mg,y,col,18,2,2,'S');
+  tc(gr);font(7,'bold');doc.text('DO THIS TODAY',mg+3,y+5);
+  tc(wh);font(8.5);
+  const al2=doc.splitTextToSize(r.immediateAction||'',col-6);
+  doc.text(al2,mg+3,y+10);y+=22;
+
+  (r.weeklyHabits||[]).forEach((h,i)=>{
+    tc(gr);font(9,'bold');doc.text(String(i+1)+'.',mg,y);
+    tc(wh);font(8.5);doc.text(h,mg+5,y);y+=5.5;
+  });
+
+  y+=4;bg([25,15,0]);doc.roundedRect(mg,y,col,12,2,2,'F');
+  tc(am);font(7);
+  const disc=doc.splitTextToSize('Disclaimer: For personal journaling only. Not investment advice. Not SEBI registered.',col-4);
+  doc.text(disc,mg+2,y+4);
+
+  // Footers
+  [1,2].forEach(pg=>{
+    doc.setPage(pg);
+    bg(sf);doc.rect(0,287,210,10,'F');
+    tc(gr);font(8,'bold');doc.text('TRADYLY',mg,293);
+    tc(mu);font(7);doc.text('tradyly.com · Your trading blind spots. Exposed.',mg+18,293);
+    doc.text('Page '+pg+'/2',W-mg,293,{align:'right'});
+  });
+
+  doc.save('Tradyly_Report_'+new Date().toISOString().split('T')[0]+'.pdf');
+  toast('✓ PDF downloaded successfully!');
 }
 
 // ── PAYWALL ───────────────────────────────────────────
