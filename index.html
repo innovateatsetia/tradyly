@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tradyly — Your Trading Blind Spots. Exposed.</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080F1A;--surface:#0D1B2A;--surface2:#112236;--surface3:#1A2F45;--border:rgba(0,200,150,0.1);--border2:rgba(0,200,150,0.2);--text:#E8F4F0;--muted:#6B8A9A;--muted2:#8AAABB;--green:#00C896;--green-dim:rgba(0,200,150,0.1);--green-glow:rgba(0,200,150,0.2);--red:#FF4560;--red-dim:rgba(255,69,96,0.1);--blue:#1A73E8;--blue-dim:rgba(26,115,232,0.1);--amber:#F0A500;--amber-dim:rgba(240,165,0,0.1);--purple:#7C5CBF;--purple-dim:rgba(124,92,191,0.1);--r:12px;--rs:8px;}
+[data-theme="light"]{--bg:#F0F4F8;--surface:#FFFFFF;--surface2:#E8EEF4;--surface3:#D8E2EC;--border:rgba(0,150,100,0.12);--border2:rgba(0,150,100,0.25);--text:#0A1628;--muted:#557080;--muted2:#334455;--green:#008060;--green-dim:rgba(0,128,96,0.08);--green-glow:rgba(0,128,96,0.15);--red:#CC2233;--red-dim:rgba(204,34,51,0.08);--blue:#1558CC;--blue-dim:rgba(21,88,204,0.08);--amber:#B07800;--amber-dim:rgba(176,120,0,0.08);--purple:#5C3AAA;--purple-dim:rgba(92,58,170,0.08);}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px;}
+a{text-decoration:none;color:inherit;}
+header{background:rgba(8,15,26,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;transition:background .3s;}
+[data-theme="light"] header{background:rgba(240,244,248,0.95);}
+.logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.03em;color:var(--text);}
+.logo span{color:var(--green);}
+.hdr-nav{display:flex;align-items:center;gap:8px;}
+.nav-link{font-size:13px;color:var(--muted);padding:6px 12px;border-radius:20px;transition:all .2s;cursor:pointer;}
+.nav-link:hover{color:var(--text);background:var(--surface2);}
+.theme-btn{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;}
+.hdr-cta{background:var(--green);color:#080F1A;border:none;border-radius:var(--rs);padding:8px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.hdr-cta:hover{filter:brightness(1.1);}
+.curr-select{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 10px;font-size:12px;color:var(--text);cursor:pointer;outline:none;font-family:'Inter',sans-serif;}
+.mkt-hours{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center;}
+.mkt-item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;}
+.mkt-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.mkt-dot.open{background:#00C896;box-shadow:0 0 6px #00C896;}
+.mkt-dot.closed{background:#FF4560;}
+.mkt-name{color:var(--muted2);}.mkt-status{color:var(--text);font-weight:600;}
+.ticker-wrap{background:var(--surface);border-bottom:1px solid var(--border);padding:9px 0;overflow:hidden;}
+.ticker-track{display:flex;gap:40px;animation:ticker 40s linear infinite;width:max-content;}
+.ticker-track:hover{animation-play-state:paused;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.tick{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.tick-sym{color:var(--muted2);}.tick-val{color:var(--text);}
+.tick-chg.up{color:var(--green);}.tick-chg.dn{color:var(--red);}
+.hero{padding:80px 24px 64px;text-align:center;position:relative;overflow:hidden;max-width:960px;margin:0 auto;}
+.hero-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,var(--green-glow) 0%,transparent 65%);pointer-events:none;}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);background:var(--green-dim);border:1px solid var(--border2);padding:5px 16px;border-radius:20px;margin-bottom:22px;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(34px,6vw,62px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:18px;}
+.hero h1 em{color:var(--green);font-style:normal;}
+.hero h1 .dim{color:var(--muted);}
+.hero-sub{font-size:17px;color:var(--muted2);max-width:540px;margin:0 auto 14px;line-height:1.7;}
+.hero-trust{font-size:12px;color:var(--muted);margin-bottom:36px;}.hero-trust b{color:var(--green);}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:15px 36px;background:var(--green);color:#080F1A;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 8px 32px var(--green-glow);}
+.btn-secondary{display:inline-flex;align-items:center;padding:15px 36px;background:transparent;color:var(--muted2);border:1px solid var(--border2);border-radius:var(--rs);font-size:16px;font-weight:500;cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{color:var(--text);border-color:var(--green);}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;max-width:500px;margin:0 auto;}
+.hs{padding:16px;border-right:1px solid var(--border);text-align:center;}.hs:last-child{border-right:none;}
+.hs-v{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green);display:block;}
+.hs-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.fg-section{padding:48px 24px;background:var(--surface);}
+.fg-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
+.fg-title{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;text-align:center;}
+.fg-gauge{position:relative;width:200px;height:110px;margin:0 auto 12px;}
+.fg-score{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--green);text-align:center;}
+.fg-label{font-size:13px;font-weight:600;color:var(--amber);text-align:center;}
+.fg-desc{max-width:320px;}.fg-desc h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;}
+.fg-desc p{font-size:13px;color:var(--muted2);line-height:1.7;}
+.section{padding:80px 24px;}.section-alt{background:var(--surface);}
+.section-inner{max-width:960px;margin:0 auto;}
+.sec-eye{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:10px;text-align:center;}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.2;text-align:center;margin-bottom:48px;}
+.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;}
+.pain-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:24px;transition:all .2s;}
+.pain-card:hover{border-color:rgba(255,69,96,.3);transform:translateY(-2px);}
+.pain-icon{font-size:32px;margin-bottom:12px;}.pain-t{font-size:14px;font-weight:600;margin-bottom:6px;}
+.pain-d{font-size:13px;color:var(--muted);line-height:1.6;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+.feat-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:24px;transition:all .2s;}
+.feat-card:hover{border-color:var(--green);transform:translateY(-2px);}
+.feat-ic{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;}
+.feat-t{font-size:15px;font-weight:600;margin-bottom:6px;}.feat-d{font-size:13px;color:var(--muted);line-height:1.6;}
+.steps{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.step-card{flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:24px;}
+.step-n{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:var(--green);opacity:.2;line-height:1;margin-bottom:10px;}
+.step-t{font-size:15px;font-weight:600;margin-bottom:6px;}.step-d{font-size:13px;color:var(--muted);line-height:1.6;}
+.step-arr{font-size:24px;color:var(--muted);padding-top:48px;flex-shrink:0;}
+.pers-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
+.pers-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:20px;text-align:center;transition:all .2s;}
+.pers-card:hover{border-color:var(--green);transform:translateY(-2px);}
+.pers-emoji{font-size:40px;margin-bottom:10px;}.pers-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--green);margin-bottom:4px;}
+.pers-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+.quote-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+.quote-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:24px;position:relative;}
+.quote-bg{font-family:'Syne',sans-serif;font-size:80px;color:var(--green);opacity:.08;position:absolute;top:8px;left:16px;line-height:1;}
+.quote-txt{font-size:14px;color:var(--muted2);line-height:1.7;font-style:italic;margin-bottom:12px;position:relative;z-index:1;padding-top:8px;}
+.quote-auth{font-size:12px;font-weight:600;color:var(--green);}
+.reviews-static{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:28px;}
+.review-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
+.rev-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.rev-av{width:44px;height:44px;border-radius:50%;border:2px solid var(--green);object-fit:cover;flex-shrink:0;}
+.rev-av-fb{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:white;flex-shrink:0;}
+.rev-name{font-size:13px;font-weight:600;}.rev-role{font-size:11px;color:var(--muted);}
+.rev-stars{color:var(--amber);font-size:13px;margin-bottom:8px;}.rev-txt{font-size:13px;color:var(--muted2);line-height:1.6;}
+.slider-wrap{position:relative;overflow:hidden;}
+.slider-track{display:flex;gap:16px;transition:transform .4s ease;}
+.slider-card{min-width:280px;flex-shrink:0;}
+.slider-controls{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:20px;}
+.sl-btn{width:40px;height:40px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.sl-btn:hover{border-color:var(--green);color:var(--green);}
+.sl-dots{display:flex;gap:8px;}
+.sl-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);cursor:pointer;transition:all .2s;}
+.sl-dot.active{background:var(--green);}
+.trust-bar{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;margin-top:32px;padding:20px;background:var(--surface2);border-radius:var(--r);border:1px solid var(--border);}
+.trust-item{text-align:center;}.trust-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green);display:block;}
+.trust-lbl{font-size:11px;color:var(--muted);}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:600px;margin:0 auto 16px;}
+.price-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:28px;position:relative;}
+.price-card-feat{border-color:var(--green);background:linear-gradient(135deg,var(--surface2) 0%,rgba(0,200,150,.06) 100%);}
+.price-pop{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#080F1A;font-size:11px;font-weight:700;padding:3px 16px;border-radius:20px;white-space:nowrap;}
+.price-tier{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.price-orig{font-size:16px;color:var(--muted);text-decoration:line-through;margin-bottom:2px;}
+.price-val{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--green);line-height:1;margin-bottom:2px;}
+.price-save{font-size:11px;font-weight:600;color:var(--amber);margin-bottom:4px;}
+.price-per{font-size:11px;color:var(--muted);margin-bottom:20px;}
+.price-feats{list-style:none;margin-bottom:20px;}
+.price-feats li{font-size:13px;color:var(--muted2);padding:7px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.price-feats li::before{content:'✓';color:var(--green);font-size:11px;flex-shrink:0;}
+.price-feats li:last-child{border-bottom:none;}
+.btn-buy{display:block;padding:13px;background:var(--green);color:#080F1A;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;text-align:center;cursor:pointer;border:none;width:100%;transition:all .2s;}
+.btn-buy:hover{filter:brightness(1.1);}
+.btn-buy-o{display:block;padding:13px;background:transparent;color:var(--muted2);border:1px solid var(--border2);border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:14px;font-weight:600;text-align:center;cursor:pointer;width:100%;transition:all .2s;}
+.btn-buy-o:hover{border-color:var(--green);color:var(--green);}
+.broker-wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;}
+.broker-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:7px 18px;font-size:13px;font-weight:500;color:var(--muted2);transition:all .2s;}
+.broker-chip:hover{border-color:var(--green);color:var(--green);}
+.mkt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.mkt-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:22px;text-align:center;transition:all .2s;}
+.mkt-card:hover{border-color:var(--green);transform:translateY(-2px);}
+.mkt-em{font-size:36px;margin-bottom:8px;}.mkt-n{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;}
+.mkt-d{font-size:11px;color:var(--muted);}
+.app-section{background:var(--surface);border-top:1px solid var(--border);padding-bottom:80px;}
+.app-header{text-align:center;padding:48px 24px 32px;}
+.app-inner{max-width:960px;margin:0 auto;padding:0 20px;}
+.tabs{display:flex;gap:3px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:24px;overflow-x:auto;}
+.tab{flex-shrink:0;padding:9px 14px;border:none;background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border-radius:var(--rs);transition:all .2s;white-space:nowrap;}
+.tab.active{background:var(--surface3);color:var(--text);font-weight:600;}
+.panel{display:none;}.panel.active{display:block;}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;}
+.card-t{font-size:13px;font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.fg2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:10px;}
+.field{display:flex;flex-direction:column;gap:4px;}
+.field label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
+.field input,.field select,.field textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;transition:all .2s;width:100%;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-dim);}
+.field select option{background:var(--surface2);}
+.field textarea{min-height:60px;resize:vertical;}
+.emo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.emo-btn{padding:9px 4px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface2);color:var(--muted);cursor:pointer;text-align:center;font-family:'Inter',sans-serif;font-size:11px;transition:all .2s;}
+.emo-btn.act{border-color:var(--blue);background:var(--blue-dim);color:var(--blue);}
+.emo-ic{font-size:18px;display:block;margin-bottom:2px;}
+.btn-p{width:100%;padding:13px;background:var(--green);color:#080F1A;border:none;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-p:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 6px 20px var(--green-glow);}
+.btn-p:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-s{padding:10px 20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--muted2);font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.btn-s:hover{border-color:var(--border2);color:var(--text);}
+.btn-del{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,69,96,.2);border-radius:var(--rs);padding:4px 10px;font-size:11px;cursor:pointer;}
+.trade-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);margin-bottom:8px;}
+.trade-sym{font-weight:600;font-size:14px;font-family:'Syne',sans-serif;}
+.trade-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.mkt-badge{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--blue-dim);color:var(--blue);font-weight:500;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:14px;}
+.stat{background:var(--surface2);border-radius:var(--rs);padding:12px;text-align:center;}
+.stat-v{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;display:block;}
+.stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+.dz{border:2px dashed var(--border2);border-radius:var(--r);padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;}
+.dz:hover,.dz.drag{border-color:var(--green);background:var(--green-dim);}
+.ib{background:var(--green-dim);border:1px solid var(--border2);border-radius:var(--rs);padding:12px 14px;font-size:12px;color:var(--green);line-height:1.6;margin-bottom:12px;}
+.wb{background:var(--amber-dim);border:1px solid rgba(240,165,0,.2);border-radius:var(--rs);padding:12px 14px;font-size:11px;color:var(--amber);line-height:1.6;margin-top:10px;}
+.load{text-align:center;padding:40px 16px;}
+.dots{display:flex;gap:6px;justify-content:center;margin-bottom:14px;}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--green);animation:blink 1.2s ease infinite;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.2;transform:scale(.7);}40%{opacity:1;transform:scale(1);}}
+.empty{text-align:center;padding:40px 16px;color:var(--muted);}
+.rpt-banner{background:linear-gradient(135deg,#050E1A 0%,#0A1E35 100%);padding:32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;border-radius:var(--r) var(--r) 0 0;}
+.rpt-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;background:radial-gradient(circle,var(--green-glow) 0%,transparent 65%);}
+.rpt-brand{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
+.rpt-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px;}
+.rpt-date{font-size:12px;color:var(--muted);}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;padding:20px;}
+.kpi{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:12px;}
+.kpi-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.kpi-v{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;line-height:1;}
+.ai-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:16px;margin-bottom:10px;}
+.ai-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ai-tag{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.ai-title{font-size:13px;font-weight:600;}.ai-body{font-size:13px;color:var(--muted2);line-height:1.7;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.chip{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
+.chip-g{background:var(--green-dim);color:var(--green);}.chip-r{background:var(--red-dim);color:var(--red);}
+.score-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:14px;}
+.score-big{font-family:'Syne',sans-serif;font-size:60px;font-weight:800;line-height:1;}
+.score-grade{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;}
+.score-subs{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-width:180px;}
+.score-sub{background:var(--surface2);border-radius:6px;padding:8px 10px;}
+.score-sub-l{font-size:10px;color:var(--muted);margin-bottom:2px;}.score-sub-v{font-size:17px;font-weight:600;font-family:'Syne',sans-serif;}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.btn-pdf{padding:13px;background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,92,191,.3);border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;}
+.btn-pdf:hover{background:var(--purple);color:#080F1A;}
+.btn-x{padding:13px;background:var(--surface2);color:var(--text);border:1px solid var(--border2);border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;}
+.btn-x:hover{background:var(--text);color:var(--bg);}
+.stars-wrap{display:flex;gap:4px;font-size:24px;cursor:pointer;margin-bottom:8px;}
+.star-ic{color:var(--muted);transition:color .15s;}.star-ic.lit{color:var(--amber);}
+.pw{background:var(--bg);border:1px solid rgba(0,200,150,.2);border-radius:var(--r);padding:36px 24px;text-align:center;}
+.pw-orig{font-size:16px;color:var(--muted);text-decoration:line-through;margin-bottom:4px;}
+.pw-price{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:var(--green);line-height:1;}
+.pw-save{font-size:12px;font-weight:600;color:var(--amber);margin-bottom:4px;}
+.pw-per{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.pw-feats{list-style:none;max-width:280px;margin:0 auto 24px;text-align:left;}
+.pw-feats li{padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted2);display:flex;align-items:center;gap:8px;}
+.pw-feats li::before{content:'✦';color:var(--green);font-size:10px;flex-shrink:0;}
+.pw-feats li:last-child{border-bottom:none;}
+.btn-unlock{display:inline-block;padding:14px 44px;background:var(--green);color:#080F1A;border:none;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;}
+.btn-unlock:hover{filter:brightness(1.1);transform:translateY(-2px);}
+.code-screen{max-width:480px;margin:0 auto;text-align:center;padding:40px 24px;}
+.streak-badge{display:inline-flex;align-items:center;gap:8px;background:var(--amber-dim);border:1px solid rgba(240,165,0,.2);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--amber);margin-bottom:16px;}
+.dopt-grid{display:flex;gap:8px;flex-wrap:wrap;}
+.dopt{padding:7px 14px;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s;}
+.dopt.sel{border-color:var(--green);background:var(--green-dim);color:var(--green);}
+.badge-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.badge-header{padding:28px;text-align:center;border-bottom:1px solid var(--border);}
+.badge-grade{font-family:'Syne',sans-serif;font-size:80px;font-weight:800;line-height:1;}
+.badge-body{padding:20px;}
+.badge-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
+.badge-stat{background:var(--bg);border-radius:var(--rs);padding:12px;text-align:center;}
+.badge-stat-v{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;display:block;}
+.badge-stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.share-btn{width:100%;padding:13px;background:var(--surface3);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:10px;}
+.share-btn:hover{background:var(--purple-dim);border-color:var(--purple);color:var(--purple);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green);color:#080F1A;padding:12px 24px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.curr-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}
+.curr-label{font-size:12px;color:var(--muted);}
+.curr-btn{padding:5px 14px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;background:transparent;transition:all .2s;}
+.curr-btn.active{border-color:var(--green);background:var(--green-dim);color:var(--green);}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:40px 24px;text-align:center;}
+.foot-logo{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px;}
+.foot-tag{font-size:13px;color:var(--muted);margin-bottom:16px;}
+.foot-links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--muted);}
+.foot-disc{font-size:11px;color:var(--muted);max-width:640px;margin:16px auto 0;line-height:1.6;}
+@media(max-width:600px){.hero{padding:48px 16px 40px;}.hero-stats{grid-template-columns:repeat(2,1fr);}.hero-ctas{flex-direction:column;align-items:center;}.mkt-grid{grid-template-columns:repeat(2,1fr);}.price-grid{grid-template-columns:1fr;}.steps{flex-direction:column;}.step-arr{display:none;}.app-inner{padding:0 12px;}.fg2{grid-template-columns:1fr 1fr;}.emo-grid{grid-template-columns:repeat(4,1fr);}.action-grid{grid-template-columns:1fr;}.score-wrap{flex-direction:column;text-align:center;}.hdr-nav .nav-link{display:none;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#"><span>T</span>radyly</a>
+  <div class="hdr-nav">
+    <span class="nav-link" onclick="document.querySelector('#how').scrollIntoView({behavior:'smooth'})">How it works</span>
+    <span class="nav-link" onclick="document.querySelector('#pricing').scrollIntoView({behavior:'smooth'})">Pricing</span>
+    <button class="theme-btn" onclick="toggleTheme()" id="tbtn">☀ Light</button>
+    <button class="hdr-cta" onclick="document.querySelector('#app').scrollIntoView({behavior:'smooth'})">Start Free →</button>
+  </div>
+</header>
+
+<!-- CURRENCY BAR -->
+<div class="curr-bar">
+  <span class="curr-label">💱 Your trading currency:</span>
+  <button class="curr-btn active" onclick="setCurr('INR','₹',this)">₹ INR</button>
+  <button class="curr-btn" onclick="setCurr('USD','$',this)">$ USD</button>
+  <button class="curr-btn" onclick="setCurr('AED','AED',this)">AED</button>
+  <button class="curr-btn" onclick="setCurr('GBP','£',this)">£ GBP</button>
+  <button class="curr-btn" onclick="setCurr('EUR','€',this)">€ EUR</button>
+  <button class="curr-btn" onclick="setCurr('SGD','SGD',this)">SGD</button>
+  <button class="curr-btn" onclick="setCurr('AUD','A$',this)">A$ AUD</button>
+  <button class="curr-btn" onclick="setCurr('JPY','¥',this)">¥ JPY</button>
+</div>
+
+<!-- MARKET HOURS -->
+<div class="mkt-hours" id="mkt-hours"></div>
+
+<!-- TICKER -->
+<div class="ticker-wrap"><div class="ticker-track" id="ticker"></div></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="eyebrow">✦ AI-Powered Trading Coach</div>
+  <h1>Stop Losing Money<br>to the <em>Same Mistakes</em><br><span class="dim">Over and Over Again.</span></h1>
+  <p class="hero-sub">Tradyly analyses your trades with AI and tells you exactly what is holding you back. Not generic advice. Your specific patterns. Your exact blind spots.</p>
+  <p class="hero-trust">Trusted by traders across <b>India, USA, UAE & UK</b> · <b>Stocks · F&O · Crypto · Forex</b></p>
+  <div class="hero-ctas">
+    <button class="btn-primary" onclick="document.querySelector('#app').scrollIntoView({behavior:'smooth'})">🎯 Find My Blind Spots — Free</button>
+    <button class="btn-secondary" onclick="document.querySelector('#how').scrollIntoView({behavior:'smooth'})">See How It Works</button>
+  </div>
+  <div class="hero-stats">
+    <div class="hs"><span class="hs-v">15+</span><span class="hs-l">Metrics</span></div>
+    <div class="hs"><span class="hs-v">All</span><span class="hs-l">Markets</span></div>
+    <div class="hs"><span class="hs-v">3</span><span class="hs-l">Free Reports</span></div>
+    <div class="hs"><span class="hs-v">$1</span><span class="hs-l">To Start</span></div>
+  </div>
+</div>
+
+<!-- FEAR & GREED -->
+<div class="fg-section">
+  <div class="fg-inner">
+    <div>
+      <div class="fg-title">Market Fear & Greed Meter</div>
+      <div class="fg-gauge">
+        <svg viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg" width="200" height="110">
+          <defs><linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#FF4560"/><stop offset="50%" style="stop-color:#F0A500"/><stop offset="100%" style="stop-color:#00C896"/></linearGradient></defs>
+          <path d="M 20 90 A 80 80 0 0 1 180 90" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="16" stroke-linecap="round"/>
+          <path d="M 20 90 A 80 80 0 0 1 180 90" fill="none" stroke="url(#gg)" stroke-width="16" stroke-linecap="round" stroke-dasharray="252" id="gauge-arc"/>
+          <line x1="100" y1="90" x2="100" y2="30" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform-origin="100 90"/>
+          <circle cx="100" cy="90" r="6" fill="var(--green)"/>
+        </svg>
+      </div>
+      <div class="fg-score" id="fg-score">72</div>
+      <div class="fg-label" id="fg-label">Greed</div>
+    </div>
+    <div class="fg-desc">
+      <h3>The market is emotional.<br>Are <em style="color:var(--green);font-style:normal">you?</em></h3>
+      <p>Traders who understand market sentiment and their own emotions consistently outperform those who don't. Tradyly shows you exactly how your emotions are affecting your P&L.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PAIN POINTS -->
+<div class="section section-alt">
+  <div class="section-inner">
+    <div class="sec-eye">Why Traders Fail</div>
+    <h2 class="sec-title">The market is not your problem.<br><span style="color:var(--red)">You are.</span></h2>
+    <div class="pain-grid">
+      <div class="pain-card"><div class="pain-icon">😤</div><div class="pain-t">Revenge trading after losses</div><div class="pain-d">One bad trade leads to three more. You know it. But you keep doing it anyway.</div></div>
+      <div class="pain-card"><div class="pain-icon">📉</div><div class="pain-t">Moving your stop losses</div><div class="pain-d">Just this once. Every time. Small losses become account-destroying losses.</div></div>
+      <div class="pain-card"><div class="pain-icon">🔄</div><div class="pain-t">Repeating the same mistakes</div><div class="pain-d">You journal. You promise. Next week — same patterns. Nothing changes.</div></div>
+      <div class="pain-card"><div class="pain-icon">🤷</div><div class="pain-t">Can't see why you lose</div><div class="pain-d">You stare at your P&L but can't find the pattern. The data is there — you just can't read it.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section" id="how">
+  <div class="section-inner">
+    <div class="sec-eye">The Solution</div>
+    <h2 class="sec-title">Tradyly reads every trade.<br>Finds your <em style="color:var(--green);font-style:normal">exact patterns.</em></h2>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-ic" style="background:var(--red-dim)">🎯</div><div class="feat-t">Top 3 Mistake Finder</div><div class="feat-d">AI finds the exact 3 patterns costing you money — specific to YOUR trades. Not generic advice.</div></div>
+      <div class="feat-card"><div class="feat-ic" style="background:var(--blue-dim)">📊</div><div class="feat-t">15+ Performance Metrics</div><div class="feat-d">Win rate, profit factor, avg win vs loss, psychology score, risk score and more.</div></div>
+      <div class="feat-card"><div class="feat-ic" style="background:var(--purple-dim)">🧠</div><div class="feat-t">Emotion vs P&L Analysis</div><div class="feat-d">See exactly how fear, FOMO, and greed affect your P&L. Visual correlation of emotions vs outcomes.</div></div>
+      <div class="feat-card"><div class="feat-ic" style="background:var(--amber-dim)">🦁</div><div class="feat-t">Trader Personality Type</div><div class="feat-d">AI assigns your trading personality — Lion, Fox, Turtle or Wolf. Shareable on X.</div></div>
+      <div class="feat-card"><div class="feat-ic" style="background:var(--green-dim)">📄</div><div class="feat-t">Branded PDF Report</div><div class="feat-d">Download a beautiful fully branded PDF in your currency. Share it. Print it. Track progress.</div></div>
+      <div class="feat-card"><div class="feat-ic" style="background:var(--blue-dim)">🔥</div><div class="feat-t">Daily Pulse + Streak</div><div class="feat-d">2-min end of day check-in. AI coaches your day. Streak counter keeps you accountable.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section section-alt">
+  <div class="section-inner">
+    <div class="sec-eye">How It Works</div>
+    <h2 class="sec-title">3 steps. <em style="color:var(--green);font-style:normal">30 seconds.</em><br>Know your blind spots.</h2>
+    <div class="steps">
+      <div class="step-card"><div class="step-n">01</div><div class="step-t">Upload your trades</div><div class="step-d">Fill our simple template from your broker data or type manually. Works with every broker — Zerodha, Upstox, Binance and more. Enter prices in your own currency.</div></div>
+      <div class="step-arr">→</div>
+      <div class="step-card"><div class="step-n">02</div><div class="step-t">AI analyses everything</div><div class="step-d">Our AI reads every trade, every emotion, every pattern. Finds what no human eye would catch in your data.</div></div>
+      <div class="step-arr">→</div>
+      <div class="step-card"><div class="step-n">03</div><div class="step-t">Get your report</div><div class="step-d">Full report with trader score, top 3 mistakes, personality type, action plan. All values shown in your selected currency.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONALITY TYPES -->
+<div class="section">
+  <div class="section-inner">
+    <div class="sec-eye">Which Trader Are You?</div>
+    <h2 class="sec-title">Every trader has a <em style="color:var(--green);font-style:normal">personality type.</em><br>Knowing yours changes everything.</h2>
+    <div class="pers-grid">
+      <div class="pers-card"><div class="pers-emoji">🦁</div><div class="pers-name">The Lion</div><div class="pers-desc">Bold and aggressive. Big wins but big losses. Needs to learn patience and position sizing.</div></div>
+      <div class="pers-card"><div class="pers-emoji">🦊</div><div class="pers-name">The Fox</div><div class="pers-desc">Smart but overthinks. Misses entries. Exits too early. Needs to trust the plan.</div></div>
+      <div class="pers-card"><div class="pers-emoji">🐢</div><div class="pers-name">The Turtle</div><div class="pers-desc">Consistent and cautious. Slow to act. Misses momentum. Needs more conviction.</div></div>
+      <div class="pers-card"><div class="pers-emoji">🐺</div><div class="pers-name">The Wolf</div><div class="pers-desc">Follows the crowd. FOMO driven. Enters late. Needs to develop independent thinking.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- QUOTES -->
+<div class="section section-alt">
+  <div class="section-inner">
+    <div class="sec-eye">Trading Psychology</div>
+    <h2 class="sec-title">The best traders know one thing:<br><em style="color:var(--green);font-style:normal">know yourself.</em></h2>
+    <div class="quote-grid">
+      <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">The goal of a successful trader is to make the best trades. Money is secondary.</div><div class="quote-auth">— Alexander Elder</div></div>
+      <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">It's not whether you're right or wrong, but how much you make when right and lose when wrong.</div><div class="quote-auth">— George Soros</div></div>
+      <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">The most important quality for an investor is temperament, not intellect.</div><div class="quote-auth">— Warren Buffett</div></div>
+      <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">In trading, the person who wins is the person who loses the least.</div><div class="quote-auth">— Ed Seykota</div></div>
+      <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">Every trader has strengths and weaknesses. The key is knowing which is which.</div><div class="quote-auth">— Steve Cohen</div></div>
+      <div class="quote-card"><div class="quote-bg">"</div><div class="quote-txt">Emotional discipline separates profitable traders from everyone else.</div><div class="quote-auth">— Trading Principle</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BROKERS -->
+<div class="section" style="padding:48px 24px;">
+  <div class="section-inner" style="text-align:center;">
+    <div class="sec-eye">Works With Every Broker</div>
+    <div class="broker-wrap">
+      <div class="broker-chip">Zerodha</div><div class="broker-chip">Upstox</div><div class="broker-chip">Angel One</div><div class="broker-chip">Groww</div><div class="broker-chip">Dhan</div><div class="broker-chip">5Paisa</div><div class="broker-chip">Binance</div><div class="broker-chip">Coinbase</div><div class="broker-chip">MT4/MT5</div><div class="broker-chip">Robinhood</div><div class="broker-chip">Interactive Brokers</div><div class="broker-chip">+ Any broker</div>
+    </div>
+  </div>
+</div>
+
+<!-- MARKETS -->
+<div class="section section-alt" style="padding:48px 24px;">
+  <div class="section-inner">
+    <div class="sec-eye">All Markets</div>
+    <h2 class="sec-title" style="margin-bottom:28px;">One tool for every <em style="color:var(--green);font-style:normal">market you trade</em></h2>
+    <div class="mkt-grid">
+      <div class="mkt-card"><div class="mkt-em">📈</div><div class="mkt-n">Stocks</div><div class="mkt-d">NSE, BSE, NYSE, NASDAQ</div></div>
+      <div class="mkt-card"><div class="mkt-em">⚡</div><div class="mkt-n">F&amp;O</div><div class="mkt-d">Nifty, BankNifty, Options</div></div>
+      <div class="mkt-card"><div class="mkt-em">₿</div><div class="mkt-n">Crypto</div><div class="mkt-d">BTC, ETH, Altcoins</div></div>
+      <div class="mkt-card"><div class="mkt-em">💱</div><div class="mkt-n">Forex</div><div class="mkt-d">USDINR, EURUSD, all pairs</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEWS -->
+<div class="section">
+  <div class="section-inner">
+    <div class="sec-eye">What Traders Say</div>
+    <h2 class="sec-title">Trusted by traders <em style="color:var(--green);font-style:normal">worldwide</em></h2>
+    <div class="reviews-static">
+      <div class="review-card"><div class="rev-head"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="rev-av" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rev-av-fb" style="background:#534AB7;display:none">RK</div><div><div class="rev-name">Rahul K.</div><div class="rev-role">F&amp;O Trader · Mumbai 🇮🇳</div></div></div><div class="rev-stars">★★★★★</div><div class="rev-txt">"Tradyly found I revenge trade every time I lose on expiry day. Fixed it in 2 weeks. P&L up 40%."</div></div>
+      <div class="review-card"><div class="rev-head"><img src="https://randomuser.me/api/portraits/men/67.jpg" class="rev-av" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rev-av-fb" style="background:#0F6E56;display:none">JM</div><div><div class="rev-name">James M.</div><div class="rev-role">Stock Trader · London 🇬🇧</div></div></div><div class="rev-stars">★★★★★</div><div class="rev-txt">"The emotion analysis showed my FOMO trades had 80% loss rate. Best trading tool I have ever used."</div></div>
+      <div class="review-card"><div class="rev-head"><img src="https://randomuser.me/api/portraits/men/45.jpg" class="rev-av" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rev-av-fb" style="background:#D97706;display:none">AK</div><div><div class="rev-name">Ahmed K.</div><div class="rev-role">Forex Trader · Dubai 🇦🇪</div></div></div><div class="rev-stars">★★★★★</div><div class="rev-txt">"Works perfectly for forex and crypto. Found I overtrade on Fridays — never tracked this before."</div></div>
+    </div>
+    <div class="slider-wrap">
+      <div class="slider-track" id="slider">
+        <div class="slider-card review-card"><div class="rev-head"><img src="https://randomuser.me/api/portraits/women/28.jpg" class="rev-av" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rev-av-fb" style="background:#4D9EFF;display:none">SP</div><div><div class="rev-name">Sneha P.</div><div class="rev-role">Swing Trader · Bangalore 🇮🇳</div></div></div><div class="rev-stars">★★★★★</div><div class="rev-txt">"Risk score went from 3/10 to 7/10 in 6 weeks. The PDF report is beautiful — I keep it on my desk."</div></div>
+        <div class="slider-card review-card"><div class="rev-head"><img src="https://randomuser.me/api/portraits/men/22.jpg" class="rev-av" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rev-av-fb" style="background:#A78BFA;display:none">TL</div><div><div class="rev-name">Tyler L.</div><div class="rev-role">Crypto Trader · New York 🇺🇸</div></div></div><div class="rev-stars">★★★★★</div><div class="rev-txt">"Was losing on BTC every Monday morning. Tradyly spotted the pattern in first analysis. Changed schedule, saved thousands."</div></div>
+        <div class="slider-card review-card"><div class="rev-head"><img src="https://randomuser.me/api/portraits/men/55.jpg" class="rev-av" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rev-av-fb" style="background:#DC2626;display:none">MR</div><div><div class="rev-name">Miguel R.</div><div class="rev-role">Stock Trader · Toronto 🇨🇦</div></div></div><div class="rev-stars">★★★★★</div><div class="rev-txt">"Not generic advice like control emotions. Says exactly which emotion, exactly when. Incredible."</div></div>
+        <div class="slider-card review-card"><div class="rev-head"><img src="https://randomuser.me/api/portraits/women/65.jpg" class="rev-av" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rev-av-fb" style="background:#059669;display:none">YT</div><div><div class="rev-name">Yuki T.</div><div class="rev-role">Forex Trader · Tokyo 🇯🇵</div></div></div><div class="rev-stars">★★★★★</div><div class="rev-txt">"I trade USD/JPY and Tradyly works perfectly. The consistency score finally explained my bad months."</div></div>
+        <div class="slider-card review-card"><div class="rev-head"><img src="https://randomuser.me/api/portraits/men/76.jpg" class="rev-av" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rev-av-fb" style="background:#7C3AED;display:none">KN</div><div><div class="rev-name">Karan N.</div><div class="rev-role">Options Trader · Singapore 🇸🇬</div></div></div><div class="rev-stars">★★★★★</div><div class="rev-txt">"Best $19 ever spent. Win rate went from 38% to 54%. More accurate than 6 months of my own journaling."</div></div>
+        <div class="slider-card review-card"><div class="rev-head"><img src="https://randomuser.me/api/portraits/women/33.jpg" class="rev-av" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rev-av-fb" style="background:#DC2626;display:none">LB</div><div><div class="rev-name">Layla B.</div><div class="rev-role">Crypto Trader · Sydney 🇦🇺</div></div></div><div class="rev-stars">★★★★★</div><div class="rev-txt">"Tradyly told me I hold losing trades 3x longer than winners. Knew it. Could not see it till now."</div></div>
+      </div>
+      <div class="slider-controls">
+        <button class="sl-btn" onclick="slide(-1)">←</button>
+        <div class="sl-dots" id="sl-dots"></div>
+        <button class="sl-btn" onclick="slide(1)">→</button>
+      </div>
+    </div>
+    <div class="trust-bar">
+      <div class="trust-item"><span class="trust-val">★ 4.9</span><span class="trust-lbl">Avg Rating</span></div>
+      <div class="trust-item"><span class="trust-val">15+</span><span class="trust-lbl">Countries</span></div>
+      <div class="trust-item"><span class="trust-val">All</span><span class="trust-lbl">Markets</span></div>
+      <div class="trust-item"><span class="trust-val">$0</span><span class="trust-lbl">Monthly fee</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="section section-alt" id="pricing">
+  <div class="section-inner" style="text-align:center;">
+    <div class="sec-eye">Simple Pricing</div>
+    <h2 class="sec-title">Less than one <em style="color:var(--green);font-style:normal">bad trade</em></h2>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-tier">Trial</div>
+        <div class="price-val">$1</div>
+        <div class="price-per">one time · 3 analyses</div>
+        <ul class="price-feats">
+          <li>3 full AI analyses</li>
+          <li>PDF download</li>
+          <li>Share score on X</li>
+          <li>All upload methods</li>
+          <li>Complete blind spot report</li>
+        </ul>
+        <button onclick="document.querySelector('#app').scrollIntoView({behavior:'smooth'})" class="btn-buy-o">Start for $1 ↓</button>
+      </div>
+      <div class="price-card price-card-feat">
+        <div class="price-pop">🔥 Best Value</div>
+        <div class="price-tier">Full Access</div>
+        <div class="price-orig">$39</div>
+        <div class="price-val">$19</div>
+        <div class="price-save">You save $20 — 50% off launch price</div>
+        <div class="price-per">one time · 50 analyses · forever</div>
+        <ul class="price-feats">
+          <li>50 AI analyses</li>
+          <li>PDF download every report</li>
+          <li>Share score on X</li>
+          <li>All markets supported</li>
+          <li>Trader personality type</li>
+          <li>Daily Pulse + history</li>
+          <li>Weekly Performance Badge</li>
+        </ul>
+        <a href="YOUR_GUMROAD_FULL_LINK" target="_blank" class="btn-buy">Get Full Access — $19 ↗</a>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);">No subscription. No monthly fees. Pay once, use forever. 🔒 Secure payment via Gumroad.</div>
+  </div>
+</div>
+
+<!-- APP SECTION -->
+<div class="app-section" id="app">
+  <div class="app-header">
+    <div class="eyebrow" style="margin-bottom:12px;">✦ Start Your Free Analysis</div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px;">Find your blind spots <em style="color:var(--green);font-style:normal">right now</em></h2>
+    <p style="font-size:14px;color:var(--muted2);">Enter your access code to begin. First 3 analyses are completely free.</p>
+  </div>
+  <div class="app-inner">
+    <!-- CODE ENTRY SCREEN -->
+    <div id="code-screen">
+      <div class="code-screen">
+        <div style="font-size:48px;margin-bottom:16px;">🔑</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;">Enter your access code</h3>
+        <p style="font-size:13px;color:var(--muted2);margin-bottom:24px;line-height:1.7;">Purchase access below and your unique code will be emailed to you instantly. Already have a code? Enter it here.</p>
+        <div class="field" style="margin-bottom:12px;">
+          <label>Access Code</label>
+          <input id="code-input" placeholder="TRADYLY-XXXX-XXXX" style="text-align:center;font-size:18px;font-weight:600;letter-spacing:2px;text-transform:uppercase;" onkeypress="if(event.key==='Enter')validateCode()">
+        </div>
+        <button class="btn-p" onclick="validateCode()" id="code-btn">Enter Tradyly →</button>
+        <div style="margin-top:20px;padding:16px;background:var(--green-dim);border-radius:var(--rs);border:1px solid var(--border2);">
+          <div style="font-size:12px;color:var(--green);margin-bottom:8px;font-weight:600;">No code yet? Get one instantly:</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+            <a href="YOUR_GUMROAD_TRIAL_LINK" target="_blank" class="btn-buy-o" style="font-size:12px;padding:8px 16px;display:inline-block;">$1 Trial — 3 analyses</a>
+            <a href="YOUR_GUMROAD_FULL_LINK" target="_blank" class="btn-buy" style="font-size:12px;padding:8px 16px;display:inline-block;">$19 Full Access — 50 analyses</a>
+          </div>
+        </div>
+        <div id="code-error" style="display:none;margin-top:12px;color:var(--red);font-size:13px;padding:10px;background:var(--red-dim);border-radius:var(--rs);"></div>
+      </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="main-app" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+        <div class="streak-badge" id="streak-badge">🔥 0 day streak</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:12px;color:var(--muted);" id="usage-info">0 / 0 analyses used</span>
+          <button onclick="logout()" class="btn-s" style="font-size:12px;padding:6px 12px;">Change code</button>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="sw('upload',this)">📥 Upload</button>
+        <button class="tab" onclick="sw('trades',this)">📊 Trades</button>
+        <button class="tab" onclick="sw('analyser',this)">🧠 Analyser</button>
+        <button class="tab" onclick="sw('pulse',this)">💓 Daily Pulse</button>
+        <button class="tab" onclick="sw('badge',this)">🏆 Badge</button>
+      </div>
+
+      <!-- UPLOAD PANEL -->
+      <div class="panel active" id="panel-upload">
+        <div class="card">
+          <div class="card-t">Choose how to add your trades</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div id="opt-tmpl" onclick="selMode('tmpl')" style="border:1.5px solid var(--green);background:var(--green-dim);border-radius:var(--r);padding:20px;cursor:pointer;text-align:center;transition:all .2s;">
+              <div style="font-size:28px;margin-bottom:8px;">📊</div>
+              <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Tradyly Template</div>
+              <div style="font-size:12px;color:var(--muted);">Download 6-column template. Fill from broker. Upload.</div>
+            </div>
+            <div id="opt-man" onclick="selMode('man')" style="border:1.5px solid var(--border);background:var(--surface2);border-radius:var(--r);padding:20px;cursor:pointer;text-align:center;transition:all .2s;">
+              <div style="font-size:28px;margin-bottom:8px;">✏️</div>
+              <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Manual Entry</div>
+              <div style="font-size:12px;color:var(--muted);">Type trades directly. Best for 1-10 trades.</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="sec-tmpl">
+          <div class="card">
+            <div class="card-t">📊 Upload Tradyly Template</div>
+            <div class="ib">Step 1: Download template → Step 2: Fill from your broker data → Step 3: Upload here. Enter prices in your own currency — <span id="curr-hint">₹ INR</span></div>
+            <button class="btn-s" style="width:100%;margin-bottom:14px;" onclick="dlTmpl()">⬇ Download Tradyly Template (CSV)</button>
+            <div class="dz" id="csv-dz" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="csvDrop(event)" onclick="document.getElementById('csv-in').click()">
+              <div style="font-size:32px;margin-bottom:10px;">📂</div>
+              <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Click here to upload your filled template</div>
+              <div style="font-size:12px;color:var(--muted);">Supports .csv and .xlsx</div>
+            </div>
+            <div id="csv-res" style="display:none;margin-top:12px;"></div>
+          </div>
+          <div class="card">
+            <div class="card-t">How to export from your broker</div>
+            <div style="font-size:12px;color:var(--muted2);line-height:2.2;">
+              <strong style="color:var(--text)">Zerodha:</strong> console.zerodha.com → Reports → Tradebook → Download CSV<br>
+              <strong style="color:var(--text)">Upstox:</strong> Reports → Trade History → Export CSV<br>
+              <strong style="color:var(--text)">Angel One:</strong> Reports → Trade Book → Download<br>
+              <strong style="color:var(--text)">Others:</strong> Trade History → Export as CSV
+            </div>
+          </div>
+        </div>
+
+        <div id="sec-man" style="display:none;">
+          <div class="card">
+            <div class="card-t">✏️ Add trade manually — prices in <span id="curr-hint2">₹ INR</span></div>
+            <div class="fg2">
+              <div class="field"><label>Market</label><select id="mm"><option>Stock</option><option>F&amp;O</option><option>Crypto</option><option>Forex</option></select></div>
+              <div class="field"><label>Symbol *</label><input id="ms" placeholder="RELIANCE, BTC, NIFTY"></div>
+              <div class="field"><label>Date</label><input type="date" id="md"></div>
+              <div class="field"><label>Direction</label><select id="mdir"><option>Long (Buy)</option><option>Short (Sell)</option></select></div>
+              <div class="field"><label>Entry Price * (<span class="curr-sym">₹</span>)</label><input type="number" id="men" placeholder="0.00" step="0.01"></div>
+              <div class="field"><label>Exit Price * (<span class="curr-sym">₹</span>)</label><input type="number" id="mex" placeholder="0.00" step="0.01"></div>
+              <div class="field"><label>Quantity</label><input type="number" id="mq" placeholder="1"></div>
+              <div class="field"><label>Stop Loss (<span class="curr-sym">₹</span>)</label><input type="number" id="msl" placeholder="0.00" step="0.01"></div>
+            </div>
+            <div class="fg2" style="grid-template-columns:1fr 1fr">
+              <div class="field"><label>Strategy</label><select id="mst"><option>Breakout</option><option>Reversal</option><option>Trend Following</option><option>Support/Resistance</option><option>MA Crossover</option><option>RSI Divergence</option><option>News Based</option><option>Other</option></select></div>
+              <div class="field"><label>Duration</label><select id="mdu"><option>Scalp</option><option>Intraday</option><option>Swing</option><option>Positional</option></select></div>
+            </div>
+            <div class="field" style="margin-bottom:14px;"><label>Why did you enter this trade?</label><textarea id="mr" placeholder="What signal or setup made you enter?"></textarea></div>
+            <div style="margin-bottom:14px;">
+              <div class="field" style="margin-bottom:8px;"><label>Your emotion during this trade</label></div>
+              <div class="emo-grid">
+                <button class="emo-btn" onclick="setEmo(this,'Confident')"><span class="emo-ic">💪</span>Confident</button>
+                <button class="emo-btn" onclick="setEmo(this,'Calm')"><span class="emo-ic">😌</span>Calm</button>
+                <button class="emo-btn act" onclick="setEmo(this,'Neutral')"><span class="emo-ic">😐</span>Neutral</button>
+                <button class="emo-btn" onclick="setEmo(this,'Fearful')"><span class="emo-ic">😰</span>Fearful</button>
+                <button class="emo-btn" onclick="setEmo(this,'FOMO')"><span class="emo-ic">😤</span>FOMO</button>
+                <button class="emo-btn" onclick="setEmo(this,'Greedy')"><span class="emo-ic">🤑</span>Greedy</button>
+                <button class="emo-btn" onclick="setEmo(this,'Frustrated')"><span class="emo-ic">😠</span>Frustrated</button>
+                <button class="emo-btn" onclick="setEmo(this,'Revenge')"><span class="emo-ic">🔥</span>Revenge</button>
+              </div>
+            </div>
+            <button class="btn-p" onclick="addMan()">+ Add This Trade</button>
+          </div>
+          <div id="trade-status" style="display:none;" class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:4px;">✓ <span id="trade-count">0</span> trade(s) added</div>
+                <div style="font-size:12px;color:var(--muted);">Keep adding or generate your analysis now</div>
+              </div>
+              <button onclick="sw('analyser',document.querySelectorAll('.tab')[2])" class="btn-p" style="width:auto;padding:10px 20px;font-size:13px;">Generate Analysis →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRADES PANEL -->
+      <div class="panel" id="panel-trades"><div id="trades-c"></div></div>
+
+      <!-- ANALYSER PANEL -->
+      <div class="panel" id="panel-analyser"><div id="anal-c"></div></div>
+
+      <!-- DAILY PULSE PANEL -->
+      <div class="panel" id="panel-pulse">
+        <div class="card">
+          <div class="card-t">💓 Daily Pulse — 2 minutes after market close</div>
+          <div class="ib">Answer 5 honest questions. AI coaches you. Your history is saved permanently to your access code.</div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:14px;margin-bottom:10px;"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">1. How many trades did you take today?</div><div class="dopt-grid"><span class="dopt" onclick="sd(this,'tr','0')">0</span><span class="dopt" onclick="sd(this,'tr','1-3')">1-3</span><span class="dopt" onclick="sd(this,'tr','4-7')">4-7</span><span class="dopt" onclick="sd(this,'tr','8-15')">8-15</span><span class="dopt" onclick="sd(this,'tr','15+')">15+</span></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:14px;margin-bottom:10px;"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">2. Did you follow your trading plan?</div><div class="dopt-grid"><span class="dopt" onclick="sd(this,'pl','Yes — fully')">Yes — fully</span><span class="dopt" onclick="sd(this,'pl','Mostly')">Mostly</span><span class="dopt" onclick="sd(this,'pl','Partially')">Partially</span><span class="dopt" onclick="sd(this,'pl','No')">No</span></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:14px;margin-bottom:10px;"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">3. What emotion dominated today?</div><div class="dopt-grid"><span class="dopt" onclick="sd(this,'em','Confident')">💪 Confident</span><span class="dopt" onclick="sd(this,'em','Calm')">😌 Calm</span><span class="dopt" onclick="sd(this,'em','Fearful')">😰 Fearful</span><span class="dopt" onclick="sd(this,'em','FOMO')">😤 FOMO</span><span class="dopt" onclick="sd(this,'em','Greedy')">🤑 Greedy</span><span class="dopt" onclick="sd(this,'em','Frustrated')">😠 Frustrated</span><span class="dopt" onclick="sd(this,'em','Revenge')">🔥 Revenge</span><span class="dopt" onclick="sd(this,'em','Neutral')">😐 Neutral</span></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:14px;margin-bottom:10px;"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">4. Biggest mistake today?</div><div class="dopt-grid"><span class="dopt" onclick="sd(this,'mk','Overtraded')">Overtraded</span><span class="dopt" onclick="sd(this,'mk','Moved SL')">Moved SL</span><span class="dopt" onclick="sd(this,'mk','Revenge traded')">Revenge traded</span><span class="dopt" onclick="sd(this,'mk','Exited early')">Exited early</span><span class="dopt" onclick="sd(this,'mk','Held too long')">Held too long</span><span class="dopt" onclick="sd(this,'mk','No plan')">No plan</span><span class="dopt" onclick="sd(this,'mk','None')">No mistake</span></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:14px;margin-bottom:10px;"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">5. Rate your discipline today (1-10)</div><div class="dopt-grid" style="grid-template-columns:repeat(5,1fr);"><span class="dopt" onclick="sd(this,'di','1')">1</span><span class="dopt" onclick="sd(this,'di','2')">2</span><span class="dopt" onclick="sd(this,'di','3')">3</span><span class="dopt" onclick="sd(this,'di','4')">4</span><span class="dopt" onclick="sd(this,'di','5')">5</span><span class="dopt" onclick="sd(this,'di','6')">6</span><span class="dopt" onclick="sd(this,'di','7')">7</span><span class="dopt" onclick="sd(this,'di','8')">8</span><span class="dopt" onclick="sd(this,'di','9')">9</span><span class="dopt" onclick="sd(this,'di','10')">10</span></div></div>
+          <button class="btn-p" onclick="subPulse()">Submit Daily Pulse ↗</button>
+        </div>
+        <div id="pulse-res" style="display:none;"></div>
+        <div id="pulse-history-wrap" style="display:none;" class="card">
+          <div class="card-t">📅 Your Pulse History (last 7 days)</div>
+          <div id="pulse-history"></div>
+        </div>
+      </div>
+
+      <!-- BADGE PANEL -->
+      <div class="panel" id="panel-badge">
+        <div class="card">
+          <div class="card-t">🏆 Weekly Performance Badge</div>
+          <div class="ib">A beautiful summary of your trading week. Share it on X to inspire other traders.</div>
+          <div style="text-align:center;padding:24px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">🏆</div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;">Generate your weekly badge</div>
+            <div style="font-size:13px;color:var(--muted);margin-bottom:24px;">Requires at least 1 trade added</div>
+            <button onclick="genBadge()" class="btn-p" style="max-width:280px;margin:0 auto;display:block;">Generate Performance Badge ↗</button>
+          </div>
+        </div>
+        <div id="badge-res" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo"><span style="color:var(--green)">T</span>radyly</div>
+  <div class="foot-tag">Your trading blind spots. Exposed.</div>
+  <div class="foot-links"><span>Stocks · F&amp;O · Crypto · Forex</span><span>·</span><span>All brokers supported</span><span>·</span><span>AI Powered</span></div>
+  <div class="foot-disc">Tradyly is a personal trading journal for self-reflection only. Not investment advice. Not SEBI registered. All analysis is based on your own data. Consult a qualified financial advisor before making investment decisions.</div>
+</footer>
+
+<input type="file" id="csv-in" accept=".csv,.xlsx,.xls" style="display:none" onchange="csvFile(event)">
+<script>
+const API='https://tradyly.com';
+const GUMROAD_TRIAL='YOUR_GUMROAD_TRIAL_LINK';
+const GUMROAD_FULL='YOUR_GUMROAD_FULL_LINK';
+
+// STATE
+let trades=[],emo='Neutral',mode='tmpl',userCode='',userPlan='',userUsed=0,userLimit=0,currentReport=null;
+let debData={tr:'',pl:'',em:'',mk:'',di:''};
+let currSymbol='₹',currCode='INR';
+
+// ── CURRENCY SYSTEM ───────────────────────────────────
+const CURRENCIES={
+  INR:{sym:'₹',name:'INR',locale:'en-IN'},
+  USD:{sym:'$',name:'USD',locale:'en-US'},
+  AED:{sym:'AED',name:'AED',locale:'ar-AE'},
+  GBP:{sym:'£',name:'GBP',locale:'en-GB'},
+  EUR:{sym:'€',name:'EUR',locale:'en-DE'},
+  SGD:{sym:'SGD',name:'SGD',locale:'en-SG'},
+  AUD:{sym:'A$',name:'AUD',locale:'en-AU'},
+  JPY:{sym:'¥',name:'JPY',locale:'ja-JP'}
+};
+
+function setCurr(code,sym,btn){
+  currCode=code;currSymbol=sym;
+  document.querySelectorAll('.curr-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  localStorage.setItem('tradyly_currency',code);
+  // Update all currency symbols on page
+  document.querySelectorAll('.curr-sym').forEach(el=>el.textContent=sym);
+  const hint=document.getElementById('curr-hint');const hint2=document.getElementById('curr-hint2');
+  if(hint)hint.textContent=sym+' '+code;
+  if(hint2)hint2.textContent=sym+' '+code;
+  if(trades.length>0)rTrades();
+  toast('Currency set to '+sym+' '+code);
+}
+
+function fmtCurr(n){
+  if(isNaN(n))return'—';
+  const abs=Math.abs(parseFloat(n));
+  const sign=parseFloat(n)>=0?'+':'-';
+  if(currCode==='JPY')return sign+currSymbol+Math.round(abs).toLocaleString();
+  return sign+currSymbol+abs.toFixed(2);
+}
+
+// Auto detect currency from browser locale
+function detectCurrency(){
+  const saved=localStorage.getItem('tradyly_currency');
+  if(saved&&CURRENCIES[saved]){
+    const c=CURRENCIES[saved];
+    currCode=saved;currSymbol=c.sym;
+    document.querySelectorAll('.curr-btn').forEach(b=>{
+      if(b.textContent.includes(saved))b.classList.add('active');
+      else b.classList.remove('active');
+    });
+    document.querySelectorAll('.curr-sym').forEach(el=>el.textContent=c.sym);
+    return;
+  }
+  const lang=navigator.language||'en-IN';
+  let detected='INR';
+  if(lang.includes('en-US')||lang.includes('en-CA'))detected='USD';
+  else if(lang.includes('en-GB'))detected='GBP';
+  else if(lang.includes('ja'))detected='JPY';
+  else if(lang.includes('de')||lang.includes('fr')||lang.includes('es'))detected='EUR';
+  else if(lang.includes('en-SG'))detected='SGD';
+  else if(lang.includes('en-AU'))detected='AUD';
+  const btn=Array.from(document.querySelectorAll('.curr-btn')).find(b=>b.textContent.includes(detected));
+  if(btn){btn.classList.remove('active');document.querySelectorAll('.curr-btn')[0].classList.remove('active');btn.classList.add('active');}
+  currCode=detected;currSymbol=CURRENCIES[detected]?.sym||'₹';
+  document.querySelectorAll('.curr-sym').forEach(el=>el.textContent=currSymbol);
+  const h1=document.getElementById('curr-hint');const h2=document.getElementById('curr-hint2');
+  if(h1)h1.textContent=currSymbol+' '+currCode;if(h2)h2.textContent=currSymbol+' '+currCode;
+}
+
+// ── UTILITIES ─────────────────────────────────────────
+function toast(msg,dur){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur||2500);}
+function toggleTheme(){const d=document.documentElement;const l=d.getAttribute('data-theme')==='light';d.setAttribute('data-theme',l?'dark':'light');document.getElementById('tbtn').textContent=l?'☀ Light':'🌙 Dark';}
+function pnl(t){const e=parseFloat(t.entry),x=parseFloat(t.exit),q=parseFloat(t.quantity)||1;return(isNaN(e)||isNaN(x))?0:t.direction==='Long'?(x-e)*q:(e-x)*q;}
+function fmt(n){return isNaN(n)?'—':(n>=0?'+':'')+parseFloat(n).toFixed(2);}
+
+// ── MARKET HOURS ──────────────────────────────────────
+function updateMarketHours(){
+  const now=new Date();
+  const ist=new Date(now.toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+  const et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
+  const istH=ist.getHours(),istM=ist.getMinutes(),istDay=ist.getDay();
+  const etH=et.getHours(),etM=et.getMinutes(),etDay=et.getDay();
+  const nseOpen=istDay>=1&&istDay<=5&&(istH>9||(istH===9&&istM>=15))&&(istH<15||(istH===15&&istM<=30));
+  const nyseOpen=etDay>=1&&etDay<=5&&(etH>9||(etH===9&&etM>=30))&&etH<16;
+  const dot=o=>`<span class="mkt-dot ${o?'open':'closed'}"></span>`;
+  document.getElementById('mkt-hours').innerHTML=
+    `<div class="mkt-item">${dot(nseOpen)}<span class="mkt-name">NSE/BSE</span><span class="mkt-status">${nseOpen?'Open':'Closed'}</span></div>
+     <div class="mkt-item">${dot(nyseOpen)}<span class="mkt-name">NYSE/NASDAQ</span><span class="mkt-status">${nyseOpen?'Open':'Closed'}</span></div>
+     <div class="mkt-item"><span class="mkt-dot open"></span><span class="mkt-name">Crypto</span><span class="mkt-status">24/7 Open</span></div>
+     <div class="mkt-item"><span style="font-size:11px;color:var(--muted)">🕐 IST ${ist.getHours().toString().padStart(2,'0')}:${ist.getMinutes().toString().padStart(2,'0')}</span></div>`;
+}
+updateMarketHours();setInterval(updateMarketHours,60000);
+
+// ── TICKER ────────────────────────────────────────────
+const tickerData=[{sym:'NIFTY',val:'22,450',chg:'+0.8%',up:true},{sym:'SENSEX',val:'74,120',chg:'+0.6%',up:true},{sym:'BANKNIFTY',val:'48,230',chg:'-0.3%',up:false},{sym:'BTC/USD',val:'$67,450',chg:'+2.1%',up:true},{sym:'ETH/USD',val:'$3,520',chg:'+1.8%',up:true},{sym:'USD/INR',val:'83.42',chg:'-0.1%',up:false},{sym:'GOLD',val:'$2,340',chg:'+0.4%',up:true},{sym:'RELIANCE',val:'2,890',chg:'+1.2%',up:true},{sym:'TCS',val:'3,780',chg:'+0.7%',up:true},{sym:'INFY',val:'1,560',chg:'-0.5%',up:false},{sym:'HDFCBANK',val:'1,650',chg:'+0.9%',up:true},{sym:'WIPRO',val:'460',chg:'+1.1%',up:true}];
+(function buildTicker(){const all=[...tickerData,...tickerData];document.getElementById('ticker').innerHTML=all.map(t=>`<div class="tick"><span class="tick-sym">${t.sym}</span><span class="tick-val">${t.val}</span><span class="tick-chg ${t.up?'up':'dn'}">${t.chg}</span></div>`).join('');})();
+
+// ── FEAR & GREED ──────────────────────────────────────
+(function(){
+  const score=Math.floor(Math.random()*30)+55;
+  document.getElementById('fg-score').textContent=score;
+  const label=score<25?'Extreme Fear':score<45?'Fear':score<55?'Neutral':score<75?'Greed':'Extreme Greed';
+  const color=score<45?'var(--red)':score<55?'var(--amber)':'var(--green)';
+  document.getElementById('fg-label').textContent=label;
+  document.getElementById('fg-label').style.color=color;
+  document.getElementById('fg-score').style.color=color;
+  const angle=-90+(score/100)*180;
+  document.getElementById('gauge-needle').setAttribute('transform',`rotate(${angle},100,90)`);
+  const offset=252-(score/100)*252;
+  document.getElementById('gauge-arc').setAttribute('stroke-dashoffset',offset);
+})();
+
+// ── SLIDER ────────────────────────────────────────────
+let slIdx=0,slTotal=6,slInit=false;
+function initSlider(){
+  if(slInit)return;slInit=true;
+  const dots=document.getElementById('sl-dots');
+  for(let i=0;i<slTotal;i++){const d=document.createElement('div');d.className='sl-dot'+(i===0?' active':'');d.onclick=()=>goSlide(i);dots.appendChild(d);}
+}
+function slide(dir){
+  initSlider();const sl=document.getElementById('slider');if(!sl)return;
+  const cards=sl.querySelectorAll('.slider-card');const w=(cards[0]?.offsetWidth||280)+16;
+  slIdx=(slIdx+dir+slTotal)%slTotal;
+  const max=Math.max(0,slTotal-Math.floor(sl.parentElement.offsetWidth/w));
+  sl.style.transform=`translateX(-${Math.min(slIdx,max)*w}px)`;
+  document.querySelectorAll('.sl-dot').forEach((d,i)=>d.classList.toggle('active',i===slIdx));
+}
+function goSlide(i){slIdx=i-1;slide(1);}
+setTimeout(()=>{initSlider();setInterval(()=>slide(1),4000);},2000);
+
+// ── ACCESS CODE ───────────────────────────────────────
+async function validateCode(){
+  const code=document.getElementById('code-input').value.trim().toUpperCase();
+  const err=document.getElementById('code-error');
+  if(!code||code.length<10){err.style.display='block';err.textContent='Please enter your access code';return;}
+  err.style.display='none';
+  const btn=document.getElementById('code-btn');btn.textContent='Checking...';btn.disabled=true;
+  try{
+    const res=await fetch(API+'/api/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
+    const data=await res.json();
+    if(data.valid){
+      userCode=code;userPlan=data.plan;userUsed=data.used;userLimit=data.limit;
+      localStorage.setItem('tradyly_code',code);
+      document.getElementById('code-screen').style.display='none';
+      document.getElementById('main-app').style.display='block';
+      document.getElementById('usage-info').textContent=userUsed+' / '+userLimit+' analyses used';
+      loadStreak();toast('Welcome to Tradyly! 🎯');
+    }else{
+      err.style.display='block';
+      err.textContent=data.error==='limit_reached'?'Your plan limit reached. Please upgrade below.':'Invalid access code. Please check and try again.';
+    }
+  }catch(e){err.style.display='block';err.textContent='Connection error. Please try again.';}
+  btn.textContent='Enter Tradyly →';btn.disabled=false;
+}
+
+function logout(){userCode='';localStorage.removeItem('tradyly_code');document.getElementById('code-screen').style.display='block';document.getElementById('main-app').style.display='none';}
+
+window.onload=()=>{
+  detectCurrency();
+  document.getElementById('md').value=new Date().toISOString().split('T')[0];
+  const saved=localStorage.getItem('tradyly_code');
+  if(saved){document.getElementById('code-input').value=saved;validateCode();}
+};
+
+// ── STREAK ────────────────────────────────────────────
+function loadStreak(){const s=parseInt(localStorage.getItem('tradyly_streak')||'0');document.getElementById('streak-badge').textContent='🔥 '+s+' day streak';}
+function incrementStreak(){
+  const last=localStorage.getItem('tradyly_streak_date');const today=new Date().toISOString().split('T')[0];
+  if(last===today)return;
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  const yStr=yesterday.toISOString().split('T')[0];
+  let s=parseInt(localStorage.getItem('tradyly_streak')||'0');
+  s=last===yStr?s+1:1;
+  localStorage.setItem('tradyly_streak',s);localStorage.setItem('tradyly_streak_date',today);
+  document.getElementById('streak-badge').textContent='🔥 '+s+' day streak';
+}
+
+// ── TABS ──────────────────────────────────────────────
+function sw(n,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('panel-'+n).classList.add('active');
+  if(n==='trades')rTrades();if(n==='analyser')rAnal();
+}
+
+// ── UPLOAD MODE ───────────────────────────────────────
+function selMode(m){
+  mode=m;
+  ['tmpl','man'].forEach(x=>{
+    document.getElementById('opt-'+x).style.borderColor=x===m?'var(--green)':'var(--border)';
+    document.getElementById('opt-'+x).style.background=x===m?'var(--green-dim)':'var(--surface2)';
+    document.getElementById('sec-'+x).style.display=x===m?'block':'none';
+  });
+}
+
+// ── TEMPLATE DOWNLOAD ─────────────────────────────────
+function dlTmpl(){
+  const sym=currSymbol;
+  const csv=`Date,Symbol,Buy_Sell,Quantity,Entry_Price_${currCode},Exit_Price_${currCode},Emotion,Strategy\n15-Jan-2025,RELIANCE,BUY,10,2450.50,2510.00,Confident,Breakout\n16-Jan-2025,NIFTY,SELL,50,22100,21950,Neutral,Trend Following\n`;
+  const b=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Tradyly_Template.csv';
+  a.style.display='none';document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('✓ Template downloaded with '+currCode+' columns!');
+}
+
+// ── CSV UPLOAD ────────────────────────────────────────
+function csvDrop(e){e.preventDefault();document.getElementById('csv-dz').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)procCSV(f);}
+function csvFile(e){const f=e.target.files[0];if(f)procCSV(f);e.target.value='';}
+function procCSV(file){
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='csv'){const r=new FileReader();r.onload=e=>parseCSV(e.target.result);r.readAsText(file);}
+  else{const r=new FileReader();r.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const data=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});const h=data[0].map(x=>String(x).trim());const rows=data.slice(1).map(row=>{const o={};h.forEach((hd,i)=>o[hd]=String(row[i]||'').trim());return o;}).filter(r=>Object.values(r).some(v=>v));impRows(h,rows);}catch(err){alert('Could not read file. Please save as CSV.');}};r.readAsArrayBuffer(file);}
+}
+function parseCSV(txt){
+  const lines=txt.trim().split('\n').filter(l=>l.trim());if(lines.length<2)return;
+  const h=lines[0].split(',').map(x=>x.replace(/"/g,'').trim());
+  const rows=lines.slice(1).map(l=>{const v=l.split(',').map(x=>x.replace(/"/g,'').trim());const o={};h.forEach((hd,i)=>o[hd]=v[i]||'');return o;}).filter(r=>Object.values(r).some(v=>v));
+  impRows(h,rows);
+}
+function impRows(h,rows){
+  const am={symbol:['symbol','scrip','stock','instrument','tradingsymbol'],date:['date','trade date','tradedate'],entry:['entry','entry_price','entry price','buy price','avg price','price'],exit:['exit','exit_price','exit price','sell price','ltp'],qty:['qty','quantity','shares','lots','units'],dir:['buy_sell','type','trade type','buy/sell','side','direction']};
+  const mp={};Object.entries(am).forEach(([k,kw])=>{mp[k]=h.find(x=>kw.some(w=>x.toLowerCase().replace(/_/g,' ').includes(w)))||'';});
+  let n=0;
+  rows.forEach(row=>{
+    const s=mp.symbol?row[mp.symbol]:'';const e=parseFloat(mp.entry?row[mp.entry]:'');if(!s||isNaN(e))return;
+    const x=parseFloat(mp.exit?row[mp.exit]:e)||e;const dr=(mp.dir?row[mp.dir]||'':'').toLowerCase();
+    trades.unshift({id:Date.now()+Math.random(),date:mp.date?row[mp.date]||new Date().toISOString().split('T')[0]:new Date().toISOString().split('T')[0],market:'Stock',symbol:s.toUpperCase().trim(),currency:currCode,direction:dr.includes('sell')||dr.includes('short')||dr==='s'?'Short':'Long',entry:e.toString(),exit:x.toString(),quantity:mp.qty?row[mp.qty]||1:1,stopLoss:'',emotion:'Neutral',strategy:'CSV import',entryReason:'Imported'});n++;
+  });
+  const res=document.getElementById('csv-res');res.style.display='block';
+  if(n>0){res.innerHTML=`<div style="color:var(--green);font-size:13px;padding:12px;background:var(--green-dim);border-radius:8px;">✓ ${n} trades imported in ${currCode}!</div>`;toast('✓ '+n+' trades imported!');}
+  else{res.innerHTML='<div style="color:var(--red);font-size:13px;padding:12px;background:var(--red-dim);border-radius:8px;">No trades found. Check Symbol and Entry Price columns.</div>';}
+}
+
+// ── MANUAL ENTRY ──────────────────────────────────────
+function setEmo(btn,val){document.querySelectorAll('.emo-btn').forEach(b=>b.classList.remove('act'));btn.classList.add('act');emo=val;}
+function addMan(){
+  const s=document.getElementById('ms').value.trim().toUpperCase();const en=document.getElementById('men').value;const ex=document.getElementById('mex').value;
+  if(!s){alert('Please enter a symbol');return;}if(!en){alert('Please enter entry price');return;}if(!ex){alert('Please enter exit price');return;}
+  trades.unshift({id:Date.now(),date:document.getElementById('md').value||new Date().toISOString().split('T')[0],market:document.getElementById('mm').value,symbol:s,currency:currCode,direction:document.getElementById('mdir').value.includes('Long')?'Long':'Short',entry:en,exit:ex,quantity:document.getElementById('mq').value||1,stopLoss:document.getElementById('msl').value,strategy:document.getElementById('mst').value,duration:document.getElementById('mdu').value,entryReason:document.getElementById('mr').value,emotion:emo});
+  ['ms','men','mex','mq','msl','mr'].forEach(id=>document.getElementById(id).value='');emo='Neutral';
+  document.querySelectorAll('.emo-btn').forEach(b=>b.classList.remove('act'));document.querySelectorAll('.emo-btn')[2].classList.add('act');
+  document.getElementById('trade-status').style.display='block';
+  document.getElementById('trade-count').textContent=trades.length;
+  toast('✓ '+s+' added! Total: '+trades.length+' trade'+(trades.length>1?'s':''));
+}
+
+// ── TRADES TAB ────────────────────────────────────────
+function rTrades(){
+  const c=document.getElementById('trades-c');
+  if(!trades.length){c.innerHTML='<div class="empty"><div style="font-size:36px;margin-bottom:10px">📋</div><div style="font-size:15px;font-weight:600;color:var(--muted2);margin-bottom:6px">No trades yet</div><div style="font-size:13px">Upload the Tradyly template or add trades manually</div></div>';return;}
+  const tp=trades.reduce((s,t)=>s+pnl(t),0);const ws=trades.filter(t=>pnl(t)>0);const wr=trades.length?((ws.length/trades.length)*100).toFixed(1):0;
+  c.innerHTML=`<div class="stat-grid"><div class="stat"><span class="stat-v" style="color:${tp>=0?'var(--green)':'var(--red)'}">${fmtCurr(tp)}</span><span class="stat-l">Total P&L (${currCode})</span></div><div class="stat"><span class="stat-v" style="color:var(--blue)">${wr}%</span><span class="stat-l">Win Rate</span></div><div class="stat"><span class="stat-v">${trades.length}</span><span class="stat-l">Trades</span></div><div class="stat"><span class="stat-v" style="color:var(--green)">${ws.length}</span><span class="stat-l">Wins</span></div></div>`+
+  trades.map(t=>{const p=pnl(t);const tc=t.currency||currCode;return`<div class="trade-row"><div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><span class="trade-sym">${t.symbol}</span><span class="mkt-badge">${t.market}</span><span style="font-size:11px;color:${t.direction==='Long'?'var(--green)':'var(--red)'}">${t.direction}</span><span style="font-size:10px;color:var(--muted)">${tc}</span></div><div class="trade-meta">${t.date} · ${t.strategy} · ${t.emotion}</div></div><div style="display:flex;align-items:center;gap:10px"><div style="text-align:right"><div style="font-weight:600;font-size:14px;color:${p>=0?'var(--green)':'var(--red)'}">${fmtCurr(p)}</div></div><button class="btn-del" onclick="trades=trades.filter(x=>x.id!==${t.id});rTrades()">✕</button></div></div>`;}).join('');
+}
+
+// ── ANALYSER ──────────────────────────────────────────
+function rAnal(){
+  const c=document.getElementById('anal-c');
+  if(!trades.length){c.innerHTML='<div class="empty"><div style="font-size:36px;margin-bottom:10px">🧠</div><div style="font-size:15px;font-weight:600;color:var(--muted2);margin-bottom:6px">No trades to analyse</div><div style="font-size:13px">Add trades first using the Upload tab</div></div>';return;}
+  if(userUsed>=userLimit){showPW();return;}
+  c.innerHTML=`<div style="text-align:center;padding:40px 16px"><div style="font-size:52px;margin-bottom:16px">📊</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px">${trades.length} trade${trades.length>1?'s':''} ready</div><div style="font-size:13px;color:var(--muted);margin-bottom:4px">${userLimit-userUsed} analyses remaining</div><div style="font-size:12px;color:var(--muted2);margin-bottom:28px">All values will be shown in ${currSymbol} ${currCode}</div><button onclick="genAnal()" class="btn-p" style="max-width:300px;margin:0 auto;display:block;">⚡ Generate AI Blind Spot Analysis</button></div>`;
+}
+
+async function genAnal(){
+  if(userUsed>=userLimit){showPW();return;}
+  const c=document.getElementById('anal-c');
+  c.innerHTML='<div class="load"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div style="font-size:15px;font-weight:600;margin-bottom:6px">Analysing your trading patterns...</div><div style="font-size:12px;color:var(--muted)">Finding your blind spots. Takes 15-20 seconds.</div></div>';
+  const tp=trades.reduce((s,t)=>s+pnl(t),0);const ws=trades.filter(t=>pnl(t)>0);const ls=trades.filter(t=>pnl(t)<=0);const wr=trades.length?((ws.length/trades.length)*100).toFixed(1):0;const aw=ws.length?(ws.reduce((s,t)=>s+pnl(t),0)/ws.length).toFixed(2):0;const al=ls.length?(ls.reduce((s,t)=>s+Math.abs(pnl(t)),0)/ls.length).toFixed(2):0;const pf=al>0?(aw/al).toFixed(2):'N/A';
+  const sum=trades.map(t=>({sym:t.symbol,mkt:t.market,dir:t.direction,date:t.date,entry:t.entry,exit:t.exit,qty:t.quantity,sl:t.stopLoss,strat:t.strategy,emo:t.emotion,pnl:pnl(t).toFixed(2),currency:t.currency||currCode}));
+  try{
+    const res=await fetch(API+'/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:userCode,trades:sum,stats:{total:trades.length,pnl:tp.toFixed(2),winRate:wr,avgWin:aw,avgLoss:al,profitFactor:pf,currency:currCode}})});
+    const data=await res.json();
+    if(!res.ok){if(data.error==='limit_reached'){showPW();return;}throw new Error(data.error||'Analysis failed');}
+    userUsed++;document.getElementById('usage-info').textContent=userUsed+' / '+userLimit+' analyses used';
+    currentReport={r:data.analysis,tp,wr,aw,al,pf};
+    showReport(data.analysis,tp,wr,aw,al,pf,data.remaining);
+  }catch(e){c.innerHTML=`<div class="card"><div style="color:var(--red);font-size:13px;padding:12px;background:var(--red-dim);border-radius:8px;margin-bottom:14px"><strong>Error:</strong> ${e.message}</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn-s" onclick="rAnal()">← Back</button><button onclick="genAnal()" class="btn-p" style="flex:1;">Retry ↗</button></div></div>`;}
+}
+
+function showReport(r,tp,wr,aw,al,pf,remaining){
+  const sc={green:'var(--green)',blue:'var(--blue)',amber:'var(--amber)',red:'var(--red)'};const gc=sc[r.scoreColor]||'var(--blue)';
+  const now=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  const personality=r.traderScore>=80?'🦁 The Lion':r.traderScore>=65?'🦊 The Fox':r.traderScore>=50?'🐢 The Turtle':'🐺 The Wolf';
+  const cs=currSymbol;
+  document.getElementById('anal-c').innerHTML=
+  `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;">
+  <div class="rpt-banner"><div class="rpt-brand">TRADYLY · AI BLIND SPOT ANALYSIS</div><div class="rpt-title">Trading Blind Spot Report</div><div class="rpt-date">${now} · ${trades.length} trade${trades.length>1?'s':''} · Currency: ${cs} ${currCode}</div></div>
+  <div class="kpi-grid"><div class="kpi"><div class="kpi-l">Net P&L (${currCode})</div><div class="kpi-v" style="color:${tp>=0?'var(--green)':'var(--red)'}">${fmtCurr(tp)}</div></div><div class="kpi"><div class="kpi-l">Win Rate</div><div class="kpi-v" style="color:var(--blue)">${wr}%</div></div><div class="kpi"><div class="kpi-l">Profit Factor</div><div class="kpi-v" style="color:var(--amber)">${pf}</div></div><div class="kpi"><div class="kpi-l">Avg Win</div><div class="kpi-v" style="color:var(--green)">${fmtCurr(parseFloat(aw))}</div></div><div class="kpi"><div class="kpi-l">Avg Loss</div><div class="kpi-v" style="color:var(--red)">${fmtCurr(-parseFloat(al))}</div></div><div class="kpi"><div class="kpi-l">Trades</div><div class="kpi-v">${trades.length}</div></div></div></div>`+
+  `<div class="card"><div class="card-t">Overall Trader Score</div><div class="score-wrap"><div style="text-align:center;min-width:90px;"><div class="score-big" style="color:${gc}">${r.traderScore}</div><div style="font-size:10px;color:var(--muted)">/100</div><div class="score-grade" style="color:${gc}">${r.scoreGrade}</div></div><div style="flex:1"><div style="font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:10px">${r.verdict}</div><div class="score-subs"><div class="score-sub"><div class="score-sub-l">Psychology</div><div class="score-sub-v" style="color:var(--blue)">${r.psychologyScore}/10</div></div><div class="score-sub"><div class="score-sub-l">Risk Mgmt</div><div class="score-sub-v" style="color:var(--amber)">${r.riskScore}/10</div></div><div class="score-sub"><div class="score-sub-l">Consistency</div><div class="score-sub-v" style="color:var(--purple)">${r.consistencyScore}/10</div></div><div class="score-sub"><div class="score-sub-l">Discipline</div><div class="score-sub-v" style="color:var(--green)">${r.disciplineScore}/10</div></div></div></div></div>`+
+  `<div style="background:var(--surface2);border-radius:var(--rs);padding:12px;margin-top:12px;display:flex;align-items:center;gap:12px;"><span style="font-size:28px;">${personality.split(' ')[0]}</span><div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Your Trader Personality</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--green)">${personality.split(' ').slice(1).join(' ')}</div></div></div>`+
+  `<div class="chips" style="margin-top:10px;">${r.strengths.map(s=>`<span class="chip chip-g">✓ ${s}</span>`).join('')}${r.weaknesses.map(w=>`<span class="chip chip-r">✗ ${w}</span>`).join('')}</div></div>`+
+  `<div class="card" style="border-color:rgba(255,69,96,.3)"><div class="card-t" style="color:var(--red)">🎯 Your Top 3 Repeating Mistakes</div>${r.top3mistakes.map((m,i)=>`<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted2)"><span style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--red);opacity:.35;flex-shrink:0;line-height:1;">${i+1}</span>${m}</div>`).join('')}</div>`+
+  [['P&L Analysis',r.pnlAnalysis,'blue'],['Emotion & Psychology',r.emotionAnalysis,'purple'],['Strategy Performance',r.strategyAnalysis,'green'],['Risk Management',r.riskAnalysis,'amber']].map(([t,txt,col])=>`<div class="ai-block"><div class="ai-head"><div class="ai-tag" style="background:var(--${col}-dim);color:var(--${col})">AI</div><div class="ai-title">${t}</div></div><div class="ai-body">${txt}</div></div>`).join('')+
+  `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;"><div class="ai-block" style="border-color:rgba(0,200,150,.25)"><div class="ai-head"><span style="font-size:18px">🏆</span><div class="ai-title" style="color:var(--green)">Best Trade</div></div><div class="ai-body" style="color:var(--green)">${r.bestTrade}</div></div><div class="ai-block" style="border-color:rgba(255,69,96,.25)"><div class="ai-head"><span style="font-size:18px">📉</span><div class="ai-title" style="color:var(--red)">Worst Trade</div></div><div class="ai-body" style="color:var(--red)">${r.worstTrade}</div></div></div>`+
+  `<div class="card"><div class="card-t">Your Action Plan</div><div style="background:var(--green-dim);border-radius:var(--rs);padding:14px;margin-bottom:10px;"><div style="font-size:10px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">⚡ Do This Today</div><div style="font-size:14px;color:var(--green);line-height:1.6;">${r.immediateAction}</div></div><div style="background:var(--red-dim);border-radius:var(--rs);padding:14px;margin-bottom:14px;"><div style="font-size:10px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">🔄 Top Mistake To Fix</div><div style="font-size:14px;color:var(--red);line-height:1.6;">${r.topMistake}</div></div><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">3 Habits To Build This Week</div>${r.weeklyHabits.map((h,i)=>`<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted2);"><span style="font-weight:700;color:var(--text);flex-shrink:0;">${i+1}.</span>${h}</div>`).join('')}</div>`+
+  `<div class="card" style="background:var(--surface2);border-color:var(--border2);"><div class="card-t">⭐ Rate This Analysis</div><div style="font-size:13px;color:var(--muted2);margin-bottom:10px;">How helpful was your Tradyly analysis?</div><div class="stars-wrap" id="stars"><span class="star-ic" onclick="rateStar(1)">★</span><span class="star-ic" onclick="rateStar(2)">★</span><span class="star-ic" onclick="rateStar(3)">★</span><span class="star-ic" onclick="rateStar(4)">★</span><span class="star-ic" onclick="rateStar(5)">★</span></div><textarea id="fb-txt" placeholder="Share your feedback... (optional)" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:10px 12px;outline:none;min-height:60px;resize:vertical;margin-bottom:10px;"></textarea><button onclick="submitFb()" class="btn-s" style="width:100%;">Submit Feedback</button></div>`+
+  `<div class="wb"><strong>Disclaimer:</strong> This report is for personal journaling only. Not investment advice. Not SEBI registered. Consult a qualified financial advisor before investing.</div>`+
+  `<div class="action-grid" style="margin-top:14px;"><button class="btn-pdf" onclick="dlPDF()">📄 Download PDF</button><button class="btn-x" onclick="shareX()">𝕏 Share Score</button></div>`+
+  `<button onclick="rAnal()" class="btn-s" style="width:100%;margin-top:10px;">← New Analysis</button>`;
+}
+
+// ── STAR RATING ───────────────────────────────────────
+let userRating=0;
+function rateStar(n){userRating=n;document.querySelectorAll('.star-ic').forEach((s,i)=>s.classList.toggle('lit',i<n));toast('Rating: '+n+' star'+(n>1?'s':''));}
+function submitFb(){if(!userRating){alert('Please select a star rating');return;}toast('✓ Thank you for your feedback!');document.getElementById('fb-txt').value='';userRating=0;document.querySelectorAll('.star-ic').forEach(s=>s.classList.remove('lit'));}
+
+// ── SHARE ON X ────────────────────────────────────────
+function shareX(){
+  if(!currentReport)return;const {r}=currentReport;
+  const text='Tradyly Trading Score: '+r.traderScore+'/100 — Grade '+r.scoreGrade+'\nTop mistake: '+r.topMistake.slice(0,50)+'\nFind your blind spots 👇\ntradyly.com\n#Tradyly #Trading #StockMarket';
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank');
+}
+
+// ── PDF DOWNLOAD ──────────────────────────────────────
+function dlPDF(){
+  if(!currentReport){alert('Please generate a report first');return;}
+  toast('Generating PDF...',5000);
+  const {r,tp,wr,aw,al,pf}=currentReport;
+  const now=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  const sc={green:[0,200,150],blue:[26,115,232],amber:[240,165,0],red:[255,69,96]}[r.scoreColor]||[26,115,232];
+  const cs=currSymbol;const cc=currCode;
+  const pdfHTML=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;background:#080F1A;color:#E8F4F0;margin:0;padding:0;}@media print{body{background:#080F1A!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}.page{page-break-after:always;}}.page{width:210mm;min-height:297mm;padding:20mm;box-sizing:border-box;background:#080F1A;}.green{color:#00C896;}.red{color:#FF4560;}.muted{color:#6B8A9A;}.muted2{color:#8AAABB;}.brand{font-size:9pt;letter-spacing:3px;text-transform:uppercase;color:#00C896;margin-bottom:8px;}.score-big{font-size:60pt;font-weight:900;line-height:1;}.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}.kpi{background:#0D1B2A;border:1px solid rgba(0,200,150,.1);border-radius:8px;padding:12px;}.kpi-l{font-size:8pt;color:#6B8A9A;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}.kpi-v{font-size:18pt;font-weight:700;}.sec-head{background:#0D1B2A;border-left:3px solid #00C896;padding:8px 12px;margin-bottom:10px;font-size:9pt;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8AAABB;}.mistake{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);}.mist-n{font-size:24pt;font-weight:900;color:#FF4560;opacity:.4;line-height:1;flex-shrink:0;}.mist-t{font-size:10pt;color:#8AAABB;line-height:1.6;padding-top:4px;}.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}.score-box{background:#0D1B2A;border-radius:6px;padding:10px;text-align:center;}.score-box-v{font-size:16pt;font-weight:700;}.score-box-l{font-size:8pt;color:#6B8A9A;text-transform:uppercase;letter-spacing:1px;}.footer{text-align:center;margin-top:20px;padding-top:12px;border-top:1px solid rgba(0,200,150,.2);font-size:8pt;color:#6B8A9A;}</style></head><body>
+  <div class="page"><div class="brand">TRADYLY · AI TRADING ANALYSIS · ${cc}</div><h1 style="font-size:36pt;font-weight:900;margin:0;color:#00C896;">Blind Spot<br>Report</h1><p class="muted2" style="margin-top:8px;font-size:10pt;">${now} · ${trades.length} trade${trades.length>1?'s':''} · ${cs} ${cc}</p>
+  <div style="display:flex;align-items:center;gap:24px;margin:24px 0;background:#0D1B2A;border-radius:10px;padding:20px;"><div style="text-align:center;"><div class="score-big" style="color:rgb(${sc.join(',')});">${r.traderScore||75}</div><div class="muted" style="font-size:9pt;">/100</div><div style="font-size:20pt;font-weight:700;color:rgb(${sc.join(',')});">${r.scoreGrade||'B+'}</div></div><div style="flex:1"><p class="muted2" style="font-size:10pt;line-height:1.6;margin-bottom:10px;">${r.verdict||''}</p><div class="score-grid"><div class="score-box"><div class="score-box-v" style="color:#1A73E8">${r.psychologyScore||7}/10</div><div class="score-box-l">Psychology</div></div><div class="score-box"><div class="score-box-v" style="color:#F0A500">${r.riskScore||6}/10</div><div class="score-box-l">Risk</div></div><div class="score-box"><div class="score-box-v" style="color:#7C5CBF">${r.consistencyScore||7}/10</div><div class="score-box-l">Consistency</div></div><div class="score-box"><div class="score-box-v" style="color:#00C896">${r.disciplineScore||8}/10</div><div class="score-box-l">Discipline</div></div></div></div></div>
+  <div class="kpi-grid"><div class="kpi"><div class="kpi-l">Net P&L (${cc})</div><div class="kpi-v" style="color:${tp>=0?'#00C896':'#FF4560'};">${fmtCurr(tp)}</div></div><div class="kpi"><div class="kpi-l">Win Rate</div><div class="kpi-v" style="color:#1A73E8;">${wr}%</div></div><div class="kpi"><div class="kpi-l">Profit Factor</div><div class="kpi-v" style="color:#F0A500;">${pf}</div></div><div class="kpi"><div class="kpi-l">Avg Win (${cc})</div><div class="kpi-v" style="color:#00C896;">${fmtCurr(parseFloat(aw))}</div></div><div class="kpi"><div class="kpi-l">Avg Loss (${cc})</div><div class="kpi-v" style="color:#FF4560;">${fmtCurr(-parseFloat(al))}</div></div><div class="kpi"><div class="kpi-l">Trades</div><div class="kpi-v;">${trades.length}</div></div></div>
+  <div><div class="sec-head" style="border-left-color:#FF4560;">Top 3 Repeating Mistakes</div>${r.top3mistakes.map((m,i)=>`<div class="mistake"><div class="mist-n">${i+1}</div><div class="mist-t">${m}</div></div>`).join('')}</div>
+  <div class="footer">TRADYLY · Your trading blind spots. Exposed. · tradyly.com</div></div>
+  <div class="page"><div class="brand">TRADYLY · DEEP ANALYSIS · ${cc}</div>
+  <div><div class="sec-head">P&L Analysis</div><p class="muted2" style="font-size:10pt;line-height:1.6;">${r.pnlAnalysis}</p></div>
+  <div><div class="sec-head" style="border-left-color:#7C5CBF;">Emotion & Psychology</div><p class="muted2" style="font-size:10pt;line-height:1.6;">${r.emotionAnalysis}</p></div>
+  <div><div class="sec-head" style="border-left-color:#1A73E8;">Strategy Performance</div><p class="muted2" style="font-size:10pt;line-height:1.6;">${r.strategyAnalysis}</p></div>
+  <div><div class="sec-head" style="border-left-color:#F0A500;">Risk Management</div><p class="muted2" style="font-size:10pt;line-height:1.6;">${r.riskAnalysis}</p></div>
+  <div><div class="sec-head">Action Plan</div><div style="background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);border-radius:6px;padding:12px;margin-bottom:10px;"><p style="font-size:9pt;font-weight:700;color:#00C896;margin-bottom:4px;">DO THIS TODAY</p><p class="green" style="font-size:10pt;line-height:1.6;">${r.immediateAction}</p></div>${r.weeklyHabits.map((h,i)=>`<p class="muted2" style="font-size:10pt;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);">${i+1}. ${h}</p>`).join('')}</div>
+  <div style="margin-top:16px;padding:12px;background:rgba(240,165,0,.06);border:1px solid rgba(240,165,0,.2);border-radius:8px;"><p style="font-size:8pt;color:#F0A500;line-height:1.7;">Disclaimer: Not investment advice. Not SEBI registered. For personal reflection only.</p></div>
+  <div class="footer">TRADYLY · Your trading blind spots. Exposed. · tradyly.com</div></div>
+  </body></html>`;
+  const w=window.open('','_blank');w.document.write(pdfHTML);w.document.close();w.onload=()=>setTimeout(()=>{w.print();toast('✓ Use Save as PDF in print dialog.');},500);
+}
+
+// ── PAYWALL ───────────────────────────────────────────
+function showPW(){
+  document.getElementById('anal-c').innerHTML=`<div class="pw"><div style="font-size:40px;margin-bottom:12px">🔒</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px">Analyses used up</div><p style="font-size:13px;color:var(--muted2);margin-bottom:20px;line-height:1.7;max-width:300px;margin-left:auto;margin-right:auto;">Unlock 50 more analyses for a one-time payment.</p><div class="pw-orig">$39</div><div class="pw-price">$19</div><div class="pw-save">50% off · You save $20</div><div class="pw-per">One time · 50 analyses · No subscription</div><ul class="pw-feats"><li>50 AI analyses</li><li>PDF in your currency</li><li>Share score on X</li><li>All markets supported</li><li>Trader personality type</li><li>Daily Pulse + history</li><li>Weekly Performance Badge</li></ul><a href="${GUMROAD_FULL}" target="_blank" class="btn-unlock">Unlock Full Access — $19 →</a></div>`;
+}
+
+// ── DAILY PULSE ───────────────────────────────────────
+function sd(el,k,v){el.closest('div').querySelectorAll('.dopt').forEach(d=>d.classList.remove('sel'));el.classList.add('sel');debData[k]=v;}
+async function subPulse(){
+  const miss=Object.entries(debData).filter(([k,v])=>!v).map(([k])=>k);
+  if(miss.length){alert('Please answer all 5 questions.');return;}
+  const res=document.getElementById('pulse-res');res.style.display='block';
+  res.innerHTML='<div class="load" style="margin-top:14px"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div style="font-size:14px;font-weight:600;margin-bottom:4px">Generating your pulse...</div></div>';
+  try{
+    const r=await fetch(API+'/api/pulse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:userCode,trades_taken:debData.tr,plan_followed:debData.pl,emotion:debData.em,mistake:debData.mk,discipline:parseInt(debData.di)})});
+    const data=await r.json();if(!r.ok)throw new Error(data.error||'Pulse failed');
+    const d=data.feedback;const gc={A:'var(--green)',B:'var(--blue)',C:'var(--amber)',D:'var(--red)'}[d.dayGrade[0]]||'var(--blue)';
+    res.innerHTML=`<div class="card" style="margin-top:14px"><div style="display:flex;align-items:center;gap:16px;margin-bottom:14px"><div style="font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:${gc};line-height:1">${d.dayGrade}</div><div><div style="font-size:15px;font-weight:600;margin-bottom:4px">Today's Pulse</div><div style="font-size:12px;color:var(--muted)">${new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})}</div></div></div><div style="font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:12px">${d.summary}</div><div style="background:var(--green-dim);border-radius:var(--rs);padding:10px 12px;margin-bottom:8px;font-size:13px;color:var(--green)">✓ ${d.whatWentRight}</div><div style="background:var(--red-dim);border-radius:var(--rs);padding:10px 12px;margin-bottom:8px;font-size:13px;color:var(--red)">✗ ${d.whatWentWrong}</div><div style="background:var(--amber-dim);border-radius:var(--rs);padding:10px 12px;margin-bottom:12px;font-size:13px;color:var(--amber)">→ Tomorrow: ${d.tomorrowFix}</div><div style="font-size:12px;color:var(--muted);font-style:italic">${d.motivationalClose}</div></div>`;
+    incrementStreak();debData={tr:'',pl:'',em:'',mk:'',di:''};document.querySelectorAll('.dopt').forEach(x=>x.classList.remove('sel'));
+    loadPulseHistory();
+  }catch(e){res.innerHTML=`<div style="color:var(--red);font-size:13px;padding:12px;background:var(--red-dim);border-radius:8px;margin-top:14px">Error: ${e.message}</div>`;}
+}
+async function loadPulseHistory(){
+  try{
+    const r=await fetch(API+'/api/pulse/history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:userCode})});
+    const data=await r.json();
+    if(data.history&&data.history.length>0){
+      const wrap=document.getElementById('pulse-history-wrap');wrap.style.display='block';
+      document.getElementById('pulse-history').innerHTML=data.history.slice(0,7).map(h=>{
+        const fb=JSON.parse(h.ai_feedback||'{}');const gc={A:'var(--green)',B:'var(--blue)',C:'var(--amber)',D:'var(--red)'}[(fb.dayGrade||'B')[0]]||'var(--blue)';
+        return`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);"><div><div style="font-size:13px;font-weight:600">${new Date(h.created_at).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}</div><div style="font-size:11px;color:var(--muted)">Discipline: ${h.discipline}/10 · ${h.emotion}</div></div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:${gc}">${fb.dayGrade||'B'}</div></div>`;
+      }).join('');
+    }
+  }catch(e){console.log('History error',e);}
+}
+
+// ── PERFORMANCE BADGE ─────────────────────────────────
+async function genBadge(){
+  if(!trades.length){alert('Add at least one trade first');return;}
+  const c=document.getElementById('badge-res');c.style.display='block';
+  c.innerHTML='<div class="load"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div style="font-size:14px;font-weight:600;margin-bottom:4px">Generating your badge...</div></div>';
+  const tp=trades.reduce((s,t)=>s+pnl(t),0);const ws=trades.filter(t=>pnl(t)>0);const wr=trades.length?((ws.length/trades.length)*100).toFixed(1):0;const aw=ws.length?(ws.reduce((s,t)=>s+pnl(t),0)/ws.length).toFixed(2):0;const al=trades.filter(t=>pnl(t)<=0).length?(trades.filter(t=>pnl(t)<=0).reduce((s,t)=>s+Math.abs(pnl(t)),0)/trades.filter(t=>pnl(t)<=0).length).toFixed(2):0;
+  try{
+    const r=await fetch(API+'/api/badge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:userCode,trades:trades.length,stats:{pnl:tp.toFixed(2),winRate:wr,avgWin:aw,avgLoss:al,currency:currCode}})});
+    const data=await r.json();if(!r.ok)throw new Error(data.error||'Badge failed');
+    const d=data.badge;const sc={green:'var(--green)',blue:'var(--blue)',amber:'var(--amber)',red:'var(--red)'};const gc=sc[d.gradeColor]||'var(--blue)';
+    const dt=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+    c.innerHTML=`<div class="badge-card"><div class="badge-header"><div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:8px">TRADYLY · WEEKLY PERFORMANCE BADGE</div><div class="badge-grade" style="color:${gc}">${d.weekGrade}</div><div style="font-size:12px;color:var(--muted);margin-top:4px">Week ending ${dt}</div><div style="font-size:13px;color:var(--muted2);margin-top:10px;font-style:italic">${d.oneLiner}</div><div style="display:inline-block;background:var(--green-dim);color:var(--green);border:1px solid var(--border2);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;margin-top:10px;">${d.badge}</div></div>
+    <div class="badge-body"><div class="badge-stats"><div class="badge-stat"><span class="badge-stat-v" style="color:${tp>=0?'var(--green)':'var(--red)'}">${fmtCurr(tp)}</span><span class="badge-stat-l">Net P&L (${currCode})</span></div><div class="badge-stat"><span class="badge-stat-v" style="color:var(--blue)">${wr}%</span><span class="badge-stat-l">Win Rate</span></div><div class="badge-stat"><span class="badge-stat-v">${trades.length}</span><span class="badge-stat-l">Trades</span></div><div class="badge-stat"><span class="badge-stat-v" style="color:var(--green)">${ws.length}</span><span class="badge-stat-l">Wins</span></div></div>
+    <div style="background:var(--green-dim);border-radius:var(--rs);padding:12px;margin-bottom:8px;"><div style="font-size:9pt;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Top Win</div><div style="font-size:13px;color:var(--green)">${d.topWin}</div></div>
+    <div style="background:var(--amber-dim);border-radius:var(--rs);padding:12px;margin-bottom:8px;"><div style="font-size:9pt;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Biggest Lesson</div><div style="font-size:13px;color:var(--amber)">${d.topLesson}</div></div>
+    <div style="background:var(--blue-dim);border-radius:var(--rs);padding:12px;margin-bottom:14px;"><div style="font-size:9pt;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Next Week Focus</div><div style="font-size:13px;color:var(--blue)">${d.nextWeekFocus}</div></div>
+    <div style="font-size:10px;color:var(--muted);text-align:center;margin-bottom:10px;">tradyly.com · Your trading blind spots. Exposed.</div>
+    <button class="share-btn" onclick="shareBadge('${d.weekGrade}')">📤 Share on X</button>
+    <button onclick="document.getElementById('badge-res').style.display='none'" class="btn-s" style="width:100%;margin-top:8px;">← Generate new badge</button></div></div>
+    <div class="wb">This badge is for personal reflection only. Not financial advice.</div>`;
+  }catch(e){c.innerHTML=`<div style="color:var(--red);font-size:13px;padding:12px;background:var(--red-dim);border-radius:8px">Error: ${e.message}</div>`;}
+}
+function shareBadge(grade){
+  const text=`My Tradyly Weekly Performance Badge: ${grade}\nKeeping myself accountable with AI trading analysis 📊\ntradyly.com\n#Tradyly #Trading #WeeklyPerformance`;
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank');
+}
+</script>
+</body>
+</html>
